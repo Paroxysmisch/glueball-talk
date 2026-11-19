@@ -181,13 +181,15 @@ clicks: 3
 <VerifyFigure :step="$clicks" />
 
 <!--
-For hardware behaviour, we built a Gluon-to-Z3 library. It models copies, barriers and memory accesses as events in time, with rules about what must happen before what.
+For hardware behaviour, we built a Gluon-to-Z3 library. Here's a real example.
 
-[click] The agent then asks Z3 to find a way to break a property, like "no two operations race on the same buffer".
+This pipeline waits for one copy too few. So the read of buffer 0 can start while copy 0 is still writing it. Whether that actually breaks depends on timing, so tests can easily miss it.
 
-[click] If Z3 can't, that is a proof.
+[click] The agent describes this to Z3 as events with rules about what must happen before what. The read is ordered after the wait, but nothing orders the wait after copy 0 finishes. The agent asks Z3: can the read come before copy 0 finishes?
 
-[click] If it can, we get a concrete counterexample, which we replay on the real GPU.
+[click] Z3 says yes, and gives a concrete ordering. The agent replays it on the real GPU to confirm the race.
+
+[click] With the fix, Z3 finds no such ordering. That is a proof there is no race.
 -->
 
 ---
