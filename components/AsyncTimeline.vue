@@ -2,12 +2,14 @@
 /**
  * Slide 2 — an asynchronous Hopper/Blackwell-style pipeline.
  * Lanes top → bottom: producer warp · TMA copy engine · consumer warps, separated by two dividers.
- * step 0: empty lanes · 1: everything appears in one animation, sweeping left → right in time order
+ * Autoplays when the slide appears: everything sweeps in left → right in time order
  * (producer issue → dependency → copy → dependency → MMA). Dependencies run only through the gaps.
  */
 import { computed } from 'vue'
+import { useAutoplay } from '../utils/autoplay'
 
-const props = withDefaults(defineProps<{ step?: number }>(), { step: 99 })
+// plays as soon as the slide appears (no key press)
+const { on, instant } = useAutoplay()
 
 const X0 = 180 // first column of the time axis
 const T = 134 // one pipeline period
@@ -32,14 +34,13 @@ const tiles = computed(() =>
     return { k, buf: k % 2, issue, copyStart, copyEnd, mmaStart: copyEnd + 12, mmaEnd: copyEnd + 12 + BW }
   }),
 )
-const on = computed(() => props.step >= 1)
 /** one sweep: each piece appears when the sweep reaches its x position */
 const SWEEP_S = 2.2
 const at = (x: number, extra = 0) => ({ transitionDelay: on.value ? `${((x - X0) / (XMAX - X0)) * SWEEP_S + extra}s` : '0s' })
 </script>
 
 <template>
-  <svg class="async-tl" viewBox="0 0 880 236" xmlns="http://www.w3.org/2000/svg">
+  <svg class="async-tl" :class="{ instant }" viewBox="0 0 880 236" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <marker id="atl-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
         <path d="M0,0 L10,5 L0,10 z" fill="currentColor" />
@@ -102,4 +103,5 @@ const at = (x: number, extra = 0) => ({ transitionDelay: on.value ? `${((x - X0)
 
 .piece { opacity: 0; transform: translateY(6px); transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.4, 0, 0.2, 1); }
 .piece.on { opacity: 1; transform: none; }
+.instant .piece { transition: none !important; }
 </style>

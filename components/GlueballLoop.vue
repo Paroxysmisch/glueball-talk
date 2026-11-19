@@ -1,12 +1,13 @@
 <script setup lang="ts">
 /**
  * Slide 6 — the poster's optimise → verify → benchmark loop.
- * One click plays the whole build-up automatically: each box (and the arrow into it) appears in turn,
+ * Plays automatically as soon as the slide appears: each box (and the arrow into it) appears in turn,
  * then the "repeat" loop draws, and the "retry with feedback" loop draws last.
  */
-import { computed } from 'vue'
+import { useAutoplay } from '../utils/autoplay'
 
-const props = withDefaults(defineProps<{ step?: number }>(), { step: 99 })
+// plays as soon as the slide appears (no key press)
+const { on, instant } = useAutoplay()
 
 const W = 112, G = 22, Y = 110, H = 56
 const STEP = 0.75 // seconds between boxes
@@ -25,7 +26,6 @@ const RETRY_AT = REPEAT_AT + 1.4
 const DRAW = 1.0
 
 const cx = (i: number) => boxes[i].x + W / 2
-const on = computed(() => props.step >= 1)
 const delay = (s: number) => ({ transitionDelay: on.value ? `${s}s` : '0s' })
 /** arrowhead with its tip at (x, y); drawn separately so it only appears once its path has finished drawing */
 const head = (x: number, y: number, dir: 'up' | 'down') => {
@@ -35,7 +35,7 @@ const head = (x: number, y: number, dir: 'up' | 'down') => {
 </script>
 
 <template>
-  <div class="gl-loop">
+  <div class="gl-loop" :class="{ instant }">
     <svg viewBox="-4 0 920 260" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <marker id="gl-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--slidev-theme-ink-secondary)" /></marker>
@@ -87,4 +87,5 @@ const head = (x: number, y: number, dir: 'up' | 'down') => {
 .head.on { opacity: 1; }
 .head-y { fill: #f59e0b; }
 .head-r { fill: #e11d48; }
+.instant .fade, .instant .draw, .instant .head { transition: none !important; }
 </style>

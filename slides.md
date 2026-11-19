@@ -28,19 +28,17 @@ Hi, I'm Yash. This talk is about Glueball: getting AI agents to write fast GPU c
 -->
 
 ---
-clicks: 1
----
 
 # ML Accelerators are becoming complex
 
 <p class="lede">Modern Hopper and Blackwell GPUs rely on <em>overlapping</em> work to maximise hardware utilization.</p>
 
-<AsyncTimeline :step="$clicks" class="mt-6" />
+<AsyncTimeline class="mt-6" />
 
 <!--
 Modern GPUs like Hopper and Blackwell don't just run more threads. They overlap work.
 
-[click — the whole pipeline plays out] A dedicated copy engine, the TMA, moves data in the background. Groups of threads specialise: some fetch data, others compute. Barriers coordinate them: the dotted lines are the data dependencies.
+[plays automatically when the slide appears] A dedicated copy engine, the TMA, moves data in the background. Groups of threads specialise: some fetch data, others compute. Barriers coordinate them: the dotted lines are the data dependencies.
 
 That is where the speed comes from now. It is also where the difficulty comes from. A fast kernel is a choreography of copies, computation and synchronisation across several pipeline stages. The right choreography differs for every kernel.
 -->
@@ -139,17 +137,15 @@ We target Gluon, a language that sits just below Triton. It exposes the hardware
 -->
 
 ---
-clicks: 1
----
 
 # The loop
 
 <p class="lede">Start from an existing Triton model. Every step is verified before the full model is benchmarked.</p>
 
-<GlueballLoop :step="$clicks" class="mt-4" />
+<GlueballLoop class="mt-4" />
 
 <!--
-[click — the loop builds itself box by box; ~9 s]
+[the loop builds itself box by box when the slide appears; ~9 s]
 
 We start from an existing Triton model and translate each kernel mechanically into Gluon.
 
