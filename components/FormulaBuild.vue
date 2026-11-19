@@ -31,11 +31,18 @@ const d = (i: number) => ({ transitionDelay: on(1) ? `${i * STEP_MS}ms` : '0ms' 
         <div class="ir-line store"><span class="op">tt.store %output_ptrs, %out</span></div>
       </div>
 
-      <div class="arrow" :class="{ on: on(1) }">→<span>Z3</span></div>
+      <!-- the arrow arches over its label -->
+      <div class="arrow" :class="{ on: on(1) }">
+        <svg viewBox="0 0 124 110" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 6 92 C 24 6, 100 6, 116 86" class="arc" pathLength="1" />
+          <path d="M 118 96 L 111.2 87.1 L 121 85.2 Z" class="arc-head" />
+          <text x="62" y="62" class="arc-label">Z3 symbolic</text>
+          <text x="62" y="76" class="arc-label">execution</text>
+        </svg>
+      </div>
 
       <!-- formula -->
       <div class="formula">
-        <div class="micro-label cap">One formula for the whole kernel</div>
         <div class="math">
           <span class="lhs">out<sub>i</sub></span><span class="eqs">=</span>
           <span class="frac">
@@ -60,18 +67,22 @@ const d = (i: number) => ({ transitionDelay: on(1) ? `${i * STEP_MS}ms` : '0ms' 
 
 <style scoped>
 .fb { display: flex; flex-direction: column; gap: 18px; margin-top: 36px; }
-.cols { display: grid; grid-template-columns: 1.05fr 60px 1fr; align-items: center; gap: 10px; }
+.cols { display: grid; grid-template-columns: 1.1fr 124px 1fr; align-items: center; gap: 8px; }
 .cap { font-size: 10px !important; opacity: 0.6; margin-bottom: 10px; }
 
 .ir { padding: 0.9em 1.1em !important; }
-.ir-line { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; line-height: 2; color: var(--slidev-theme-ink-secondary); border-radius: 4px; padding: 0 6px; transition: background 0.4s ease, color 0.4s ease; white-space: nowrap; }
-.ssa { display: inline-block; min-width: 92px; color: var(--slidev-theme-ink); }
-.eq { margin: 0 8px; opacity: 0.5; }
+.ir-line { font-family: 'JetBrains Mono', monospace; font-size: 10.6px; line-height: 2; color: var(--slidev-theme-ink-secondary); border-radius: 4px; padding: 0 6px; transition: background 0.4s ease, color 0.4s ease; white-space: nowrap; }
+.ssa { display: inline-block; min-width: 84px; color: var(--slidev-theme-ink); }
+.eq { margin: 0 6px; opacity: 0.5; }
 .ir-line.store { opacity: 0.5; }
 
-.arrow { font-size: 28px; text-align: center; color: var(--slidev-theme-ink-secondary); opacity: 0.25; transition: opacity 0.5s; display: flex; flex-direction: column; align-items: center; }
-.arrow span { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; }
-.arrow.on { opacity: 1; }
+.arrow svg { width: 100%; height: auto; overflow: visible; }
+.arc { fill: none; stroke: var(--slidev-theme-primary); stroke-width: 1.8; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 0.9s cubic-bezier(0.4, 0, 0.2, 1); }
+.arc-head { fill: var(--slidev-theme-primary); opacity: 0; transition: opacity 0.2s ease; }
+.arc-label { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 700; text-anchor: middle; fill: var(--slidev-theme-ink-secondary); opacity: 0.35; transition: opacity 0.4s ease; }
+.arrow.on .arc { stroke-dashoffset: 0; }
+.arrow.on .arc-head { opacity: 1; transition-delay: 0.9s; }
+.arrow.on .arc-label { opacity: 1; fill: var(--slidev-theme-ink); }
 
 .math { display: flex; align-items: center; gap: 10px; font-family: 'Instrument Serif', serif; font-size: 32px; color: var(--slidev-theme-ink); }
 .math.small { font-size: 20px; }
