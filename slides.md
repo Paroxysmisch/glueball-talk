@@ -198,18 +198,7 @@ This pipeline waits for one copy too few. So the read of buffer 0 can start whil
 
 <p class="lede">Same LLM, with and without Glueball's correctness pipeline. A bug only counts if the agent also names its failure mechanism.</p>
 
-<table class="bugs">
-<thead>
-<tr><th rowspan="2">Model</th><th colspan="4" class="grp">Generic suite · 24 bugs, 26 controls</th><th colspan="4" class="grp">Sync suite · 10 bugs, 12 controls</th></tr>
-<tr><th>Found</th><th class="d">Δ</th><th>False pos.</th><th class="d">Δ</th><th>Found</th><th class="d">Δ</th><th>False pos.</th><th class="d">Δ</th></tr>
-</thead>
-<tbody>
-<tr><td>DeepSeek V4 Pro</td><td>21</td><td class="d pos">+3</td><td>0</td><td class="d">0</td><td>10</td><td class="d">0</td><td>7</td><td class="d pos">−5</td></tr>
-<tr><td>DeepSeek V4 Flash</td><td>22</td><td class="d pos">+2</td><td>0</td><td class="d">0</td><td>10</td><td class="d">0</td><td>1</td><td class="d pos">−1</td></tr>
-<tr><td>Meta Muse Spark 1.3</td><td>22</td><td class="d pos">+2</td><td>0</td><td class="d">0</td><td>9</td><td class="d">0</td><td>3</td><td class="d pos">−3</td></tr>
-<tr><td>GPT 5.6 Sol</td><td>21</td><td class="d pos">+2</td><td>0</td><td class="d">0</td><td>9</td><td class="d pos">+1</td><td>1</td><td class="d pos">−1</td></tr>
-</tbody>
-</table>
+<BugCharts />
 
 <!--
 [4:00 · Part 3 — Results]
