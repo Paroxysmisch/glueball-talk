@@ -120,20 +120,20 @@ layout: center
 
 <h2 class="claim">Glueball gives LLM agents <span class="grad-text">theorem&#8209;proving tools</span> during GPU kernel generation.</h2>
 
-<CompilerStack class="mt-12" />
-
-<div class="gluon-notes">
-  <span>Explicit Layouts</span><span>Tensor Descriptors</span><span>TMA</span><span>Tensor Cores</span><span>Warp Specialisation</span>
-</div>
+<ProverTools />
 
 <!--
 [2:00 · Part 2 — The technique]
 
-Glueball is the first system that gives LLM agents theorem-proving tools while they generate and optimise GPU kernels.
+Glueball is the first system that gives LLM agents theorem-proving tools while they generate and optimise GPU kernels. We target Gluon, a language just below Triton that exposes the hardware controls you need, like the TMA and Tensor Cores, while keeping a structured form we can formally reason about. And yes: a glueball is what you get when you put enough gluons together.
 
-We target Gluon, a language that sits just below Triton. It exposes the hardware controls you need, such as explicit memory layouts and tensor descriptors, TMA — the Tensor Memory Accelerator — and Tensor Cores. It also keeps a structured, tile-level form that we can more easily formally reason about.
+[cards appear automatically] The agent gets two such tools, both built on the Z3 theorem prover.
 
-[click] And yes: a glueball is what you get when you put enough gluons together.
+The first, symbolic execution, turns the kernel's code into maths, to check it computes the right values.
+
+The second, a model of the asynchronous hardware, turns copies, barriers and memory accesses into events, to check they are safely ordered.
+
+I'll show each in turn, after the overall loop.
 -->
 
 ---
