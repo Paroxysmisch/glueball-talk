@@ -134,7 +134,7 @@ We target Gluon, a language that sits just below Triton. It exposes the hardware
 -->
 
 ---
-clicks: 7
+clicks: 1
 ---
 
 # The loop
@@ -144,17 +144,15 @@ clicks: 7
 <GlueballLoop :step="$clicks" class="mt-4" />
 
 <!--
-[click] We start from an existing Triton model and translate each kernel mechanically into Gluon.
+[click — the loop builds itself box by box; ~9 s]
 
-Then the agents go round a loop.
-[click] They profile the whole model to find where time goes.
-[click] They propose a ranked list of optimisations,
-[click] implement them step by step,
-[click] and verify each step.
+We start from an existing Triton model and translate each kernel mechanically into Gluon.
 
-[click] Only then do they benchmark the full model, on input shapes they have never seen.
+Then the agents go round a loop. They profile the whole model to find where time goes. They propose a ranked list of optimisations, implement them step by step, and verify each step.
 
-[click] Anything that fails verification goes back to the agent with the reason.
+Only then do they benchmark the full model, on input shapes they have never seen.
+
+Anything that fails verification goes back to the agent with the reason.
 -->
 
 ---
