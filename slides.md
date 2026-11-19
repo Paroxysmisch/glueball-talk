@@ -140,7 +140,7 @@ I'll show each in turn, after the overall loop.
 
 # The loop
 
-<p class="lede">Start from an existing Triton model. Every step is verified before the full model is benchmarked.</p>
+<p class="lede">Start from an existing Triton model. Each constituent kernel is iteratively optimised and checked for correctness.</p>
 
 <GlueballLoop class="mt-4" />
 
@@ -195,8 +195,6 @@ This pipeline waits for one copy too few. So the read of buffer 0 can start whil
 ---
 
 # Glueball improves bug detection
-
-<p class="lede">Same LLM, with and without Glueball's correctness pipeline. A bug only counts if the agent also names its failure mechanism.</p>
 
 <BugCharts />
 
@@ -307,8 +305,6 @@ clicks: 3
 
 </div>
 </div>
-
-<Footnote n="">Illustrative schedule space: stage count × tile/warp configuration.</Footnote>
 
 <!--
 The second direction comes from Mamba-2. There, agents tried many valid pipeline schedules, but the extra buffering usually cost more than it saved.
