@@ -31,9 +31,9 @@ Hi, I'm Yash. This talk is about Glueball: getting AI agents to write fast GPU c
 clicks: 1
 ---
 
-# GPUs became asynchronous
+# ML Accelerators are becoming complex
 
-<p class="lede">Modern Hopper and Blackwell GPUs <em>overlap</em> work.</p>
+<p class="lede">Modern Hopper and Blackwell GPUs rely on <em>overlapping</em> work to maximise hardware utilization.</p>
 
 <AsyncTimeline :step="$clicks" class="mt-6" />
 
@@ -54,10 +54,13 @@ That is where the speed comes from now. It is also where the difficulty comes fr
 
 <p class="lede">Compilers are struggling to keep up with specialised hardware that changes every generation.</p>
 
+<p> Humans cannot manually optimise every kernel.</p>
+
 <v-clicks>
 
-- **Adapt** expert patterns to each kernel
-- **Explore** novel designs
+- **Understand** novel hardware intricacies
+- **Adapt** expert patterns to new kernels
+- **Explore** novel designs by combining optimisations
 - **Refine** them using profiler feedback
 
 </v-clicks>
@@ -90,6 +93,8 @@ clicks: 3
 <p class="lede">Agents judge correctness by running tests on <em>fixed</em> inputs and evaluate on <em>fixed</em> outputs.</p>
 
 <p class="lede" v-click="2"><em>Asynchronous</em> bugs, like data races, appear non-deterministically.</p>
+
+<p class="lede" v-click="2">New hardware's support for new floating point standards may make a correct kernel look incorrect.</p>
 
 <p class="lede" v-click="3">Agents optimising against tests can learn to <em>overfit</em> them.</p>
 
