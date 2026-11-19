@@ -2,8 +2,8 @@
 /**
  * Slide 2 — an asynchronous Hopper/Blackwell-style pipeline.
  * Lanes top → bottom: producer warp · TMA copy engine · consumer warps, separated by two dividers.
- * step 0: empty lanes · 1: TMA copies · 2: producer + consumer warps
- * 3: dotted data dependencies (issue → copy, copy done → MMA), drawn only in the gaps between lanes.
+ * step 0: empty lanes · 1: everything appears in one animation, sweeping left → right in time order
+ * (producer issue → dependency → copy → dependency → MMA). Dependencies run only through the gaps.
  */
 import { computed } from 'vue'
 
@@ -32,7 +32,10 @@ const tiles = computed(() =>
     return { k, buf: k % 2, issue, copyStart, copyEnd, mmaStart: copyEnd + 12, mmaEnd: copyEnd + 12 + BW }
   }),
 )
-const show = (n: number) => props.step >= n
+const on = computed(() => props.step >= 1)
+/** one sweep: each piece appears when the sweep reaches its x position */
+const SWEEP_S = 2.2
+const at = (x: number, extra = 0) => ({ transitionDelay: on.value ? `${((x - X0) / (XMAX - X0)) * SWEEP_S + extra}s` : '0s' })
 </script>
 
 <template>
@@ -58,28 +61,26 @@ const show = (n: number) => props.step >= n
     <text :x="XMAX - 4" y="219" class="axis-label" text-anchor="end">time</text>
 
     <!-- dependencies: box edge to box edge, through the gaps only -->
-    <g class="piece" :class="{ on: show(3) }">
-      <template v-for="t in tiles" :key="'d' + t.k">
-        <path :d="`M ${t.issue + 12} ${bot(0) + 2} L ${t.copyStart + 12} ${top(1) - 3}`" class="dep" marker-end="url(#atl-dep)" />
-        <path v-if="t.mmaEnd < XMAX" :d="`M ${t.copyEnd - 8} ${bot(1) + 2} L ${t.mmaStart + 8} ${top(2) - 3}`" class="dep" marker-end="url(#atl-dep)" />
-      </template>
-    </g>
+    <template v-for="t in tiles" :key="'d' + t.k">
+      <path :d="`M ${t.issue + 12} ${bot(0) + 2} L ${t.copyStart + 12} ${top(1) - 3}`" class="dep piece" :class="{ on }" :style="at(t.issue, 0.15)" marker-end="url(#atl-dep)" />
+      <path v-if="t.mmaEnd < XMAX" :d="`M ${t.copyEnd - 8} ${bot(1) + 2} L ${t.mmaStart + 8} ${top(2) - 3}`" class="dep piece" :class="{ on }" :style="at(t.copyEnd, 0.1)" marker-end="url(#atl-dep)" />
+    </template>
 
     <!-- producer issues -->
-    <g v-for="t in tiles" :key="'p' + t.k" class="piece" :class="{ on: show(2) }" :style="{ transitionDelay: `${t.k * 90}ms` }">
-      <rect :x="t.issue" :y="top(0)" width="24" :height="BH" rx="5" class="blk producer" />
+    <g v-for="t in tiles" :key="'p' + t.k" class="piece" :class="{ on }" :style="at(t.issue)">
+      <GlassRect :x="t.issue" :y="top(0)" :w="24" :h="BH" :rx="6" tint="#f59e0b" />
     </g>
 
     <!-- TMA copies -->
-    <g v-for="t in tiles" :key="'c' + t.k" class="piece" :class="{ on: show(1) }" :style="{ transitionDelay: `${t.k * 90}ms` }">
-      <rect :x="t.copyStart" :y="top(1)" :width="BW" :height="BH" rx="6" :class="['blk', `buf${t.buf}`]" />
+    <g v-for="t in tiles" :key="'c' + t.k" class="piece" :class="{ on }" :style="at(t.copyStart, 0.25)">
+      <GlassRect :x="t.copyStart" :y="top(1)" :w="BW" :h="BH" :rx="8" :tint="t.buf ? '#06b6d4' : '#6366f1'" />
       <text :x="t.copyStart + BW / 2" :y="top(1) + BH / 2 + 4" class="blk-text">copy {{ t.k }} → buf {{ t.buf }}</text>
     </g>
 
     <!-- consumer MMAs -->
-    <g v-for="t in tiles" :key="'m' + t.k" class="piece" :class="{ on: show(2) }" :style="{ transitionDelay: `${150 + t.k * 90}ms` }">
+    <g v-for="t in tiles" :key="'m' + t.k" class="piece" :class="{ on }" :style="at(t.mmaStart, 0.25)">
       <template v-if="t.mmaEnd < XMAX">
-        <rect :x="t.mmaStart" :y="top(2)" :width="BW" :height="BH" rx="6" class="blk mma" />
+        <GlassRect :x="t.mmaStart" :y="top(2)" :w="BW" :h="BH" :rx="8" tint="#10b981" />
         <text :x="t.mmaStart + BW / 2" :y="top(2) + BH / 2 + 4" class="blk-text">MMA tile {{ t.k }}</text>
       </template>
     </g>
@@ -94,16 +95,11 @@ const show = (n: number) => props.step >= n
 .axis { stroke: var(--slidev-theme-ink-secondary); stroke-width: 1; opacity: 0.6; }
 .axis-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; fill: var(--slidev-theme-ink-secondary); }
 
-.blk { stroke-width: 1.2; }
-.buf0 { fill: #e3e3fb; stroke: #6366f1; }
-.buf1 { fill: #d4f0f5; stroke: #06b6d4; }
-.producer { fill: #fcebc9; stroke: #f59e0b; }
-.mma { fill: #d8f2e6; stroke: #10b981; }
 .blk-text { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-anchor: middle; fill: var(--slidev-theme-ink); }
 
 .dep { fill: none; stroke: var(--slidev-theme-ink); stroke-width: 1.3; stroke-dasharray: 3 3; opacity: 0.6; }
 .dep-head { fill: var(--slidev-theme-ink); opacity: 0.6; }
 
-.piece { opacity: 0; transform: translateX(-10px); transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+.piece { opacity: 0; transform: translateY(6px); transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.4, 0, 0.2, 1); }
 .piece.on { opacity: 1; transform: none; }
 </style>

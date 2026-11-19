@@ -28,7 +28,7 @@ Hi, I'm Yash. This talk is about Glueball: getting AI agents to write fast GPU c
 -->
 
 ---
-clicks: 3
+clicks: 1
 ---
 
 # GPUs became asynchronous
@@ -40,11 +40,7 @@ clicks: 3
 <!--
 Modern GPUs like Hopper and Blackwell don't just run more threads. They overlap work.
 
-[click] A dedicated copy engine, the TMA, moves data in the background.
-
-[click] Groups of threads specialise: some fetch data, others compute.
-
-[click] Barriers coordinate them: the dotted lines are the data dependencies.
+[click — the whole pipeline plays out] A dedicated copy engine, the TMA, moves data in the background. Groups of threads specialise: some fetch data, others compute. Barriers coordinate them: the dotted lines are the data dependencies.
 
 That is where the speed comes from now. It is also where the difficulty comes from. A fast kernel is a choreography of copies, computation and synchronisation across several pipeline stages. The right choreography differs for every kernel.
 -->
