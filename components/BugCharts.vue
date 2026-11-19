@@ -55,7 +55,6 @@ const delta = (a: number, b: number) => (b - a > 0 ? `+${b - a}` : b - a < 0 ? `
         </div>
       </div>
     </div>
-    <div class="note">Unchanged: zero false alarms on the generic suite with or without Glueball; on the synchronisation suite all models find 9–10 of 10 bugs (+1 for GPT 5.6 Sol).</div>
   </div>
 </template>
 
