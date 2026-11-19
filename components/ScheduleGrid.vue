@@ -60,10 +60,10 @@ const survivors = () => cells.filter(x => x.res && x.safe).length
     </template>
   </div>
   <div class="legend">
-    <span class="lg"><i class="sw open" />{{ props.step >= 2 ? `${survivors()} of ${cells.length} left` : `${cells.length} candidate schedules` }}</span>
-    <span class="lg fade" :class="{ on: props.step >= 1 }"><i class="sw res" />exceeds shared memory / registers</span>
-    <span class="lg fade" :class="{ on: props.step >= 2 }"><i class="sw unsafe" />fails a safety check (race, deadlock)</span>
-    <span class="lg fade" :class="{ on: props.step >= 3 }"><i class="sw top" />ranked by earlier rounds</span>
+    <span class="lgd"><i class="sw open" />{{ props.step >= 2 ? `${survivors()} of ${cells.length} left` : `${cells.length} candidate schedules` }}</span>
+    <span class="lgd fade" :class="{ on: props.step >= 1 }"><i class="sw res" />exceeds shared memory / registers</span>
+    <span class="lgd fade" :class="{ on: props.step >= 2 }"><i class="sw unsafe" />fails a safety check (race, deadlock)</span>
+    <span class="lgd fade" :class="{ on: props.step >= 3 }"><i class="sw top" />ranked by earlier rounds</span>
   </div>
 </template>
 
@@ -81,7 +81,7 @@ const survivors = () => cells.filter(x => x.res && x.safe).length
 .cell.top { background: var(--slidev-theme-primary); border: 1px solid var(--slidev-theme-primary); box-shadow: 0 0 0 4px rgba(var(--slidev-theme-primary-rgb), 0.15); }
 .rank { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: white; }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 14px; }
-.lg { display: inline-flex; align-items: center; gap: 7px; font-family: 'Source Serif 4', serif; font-size: 12.5px; color: var(--slidev-theme-ink-secondary); }
+.lgd { display: inline-flex; align-items: center; gap: 7px; font-family: 'Source Serif 4', serif; font-size: 12.5px; color: var(--slidev-theme-ink-secondary); }
 .sw { display: inline-block; width: 14px; height: 14px; border-radius: 3px; }
 .sw.open { background: rgba(var(--slidev-theme-primary-rgb), 0.3); border: 1px solid rgba(var(--slidev-theme-primary-rgb), 0.5); }
 .sw.res { background: rgba(100, 116, 139, 0.2); }

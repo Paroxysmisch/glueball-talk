@@ -20,6 +20,7 @@ const seg = (swap: boolean) => [
 ]
 const swapped = (i: number) => i === 3 && on(3)
 const links = [LX + 122 + 32, LX + 314 + 32]
+const TINT: Record<string, string> = { mm: '#6366f1', ar: '#06b6d4', ag: '#f59e0b' }
 </script>
 
 <template>
@@ -36,11 +37,10 @@ const links = [LX + 122 + 32, LX + 314 + 32]
       :style="{ transform: `translateY(${on(1) ? i * RH : 0}px)`, transitionDelay: `${i * 80}ms` }"
     >
       <text x="0" :y="Y0 + 22" class="dev">{{ i === 0 && !on(1) ? 'GPU' : d }}</text>
-      <rect
-        v-for="(s, j) in seg(swapped(i))" :key="j"
-        :x="s.x" :y="Y0" :width="s.w" height="36" rx="5"
-        :class="['blk', s.k, { comm: s.k !== 'mm', dim: s.k !== 'mm' && !on(2) }]"
-      />
+      <template v-for="(s, j) in seg(swapped(i))" :key="j">
+        <rect v-if="s.k !== 'mm' && !on(2)" :x="s.x" :y="Y0" :width="s.w" height="36" rx="7" class="blk dim" />
+        <GlassRect v-else :x="s.x" :y="Y0" :w="s.w" :h="36" :rx="7" :tint="TINT[s.k]" />
+      </template>
       <text
         v-for="(s, j) in seg(swapped(i))" :key="'t' + j"
         :x="s.x + s.w / 2" :y="Y0 + 22" class="bt" :class="{ dim: s.k !== 'mm' && !on(2) }"

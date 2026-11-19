@@ -41,7 +41,7 @@ const timeline = [
     </div>
 
     <div class="cards">
-      <div v-for="d in dirs" :key="d.n" class="card glass fade" :class="{ on: on(d.at), first: d.n === '1' }">
+      <div v-for="d in dirs" :key="d.n" class="card lg fade" :class="[{ on: on(d.at) }, d.n === '1' ? 'indigo' : 'slate']">
         <div class="head">
           <span class="n">{{ d.n }}</span>
           <span class="micro-label area">{{ d.area }}</span>
@@ -72,7 +72,6 @@ const timeline = [
 
 .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .card { padding: 12px 14px !important; display: flex; flex-direction: column; gap: 6px; }
-.card.first { border-color: rgba(var(--slidev-theme-primary-rgb), 0.45); }
 .head { display: flex; align-items: center; gap: 8px; }
 .n { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: var(--slidev-theme-primary); }
 .area { font-size: 10px !important; opacity: 0.6; }

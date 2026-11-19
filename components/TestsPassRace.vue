@@ -9,7 +9,7 @@ const props = withDefaults(defineProps<{ step?: number }>(), { step: 99 })
 
 <template>
   <div class="tpr" :class="{ zoomed: props.step >= 1, raced: props.step >= 2 }">
-    <div class="badge">
+    <div class="badge lg green">
       <span class="tick">✓</span>
       <div>
         <div class="badge-title">All tests pass</div>
@@ -26,10 +26,10 @@ const props = withDefaults(defineProps<{ step?: number }>(), { step: 99 })
         <text x="0" y="110" class="lbl-sub">reads buf 0</text>
         <line x1="110" x2="556" y1="62" y2="62" class="mid" />
 
-        <rect x="130" y="18" width="250" height="34" rx="5" class="copy" />
+        <GlassRect :x="130" :y="18" :w="250" :h="34" :rx="7" tint="#6366f1" />
         <text x="255" y="40" class="txt">copy tile 2 → buf 0</text>
 
-        <rect x="330" y="78" width="200" height="34" rx="5" class="read" />
+        <GlassRect :x="330" :y="78" :w="200" :h="34" :rx="7" tint="#10b981" />
         <text x="430" y="100" class="txt">read buf 0</text>
 
         <!-- overlap -->
@@ -45,8 +45,7 @@ const props = withDefaults(defineProps<{ step?: number }>(), { step: 99 })
 .badge {
   position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(1.25);
   display: flex; align-items: center; gap: 18px;
-  padding: 18px 30px; border-radius: 14px;
-  background: rgba(16, 185, 129, 0.12); border: 1.5px solid #10b981;
+  padding: 18px 30px; border-radius: 16px !important;
   transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .tick { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; background: #10b981; color: white; font-size: 26px; font-weight: 700; }

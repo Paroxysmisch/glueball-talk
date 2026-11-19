@@ -110,3 +110,43 @@
 }
 .slidev-layout .end-thanks { margin-top: 34px; font-family: 'Archivo', sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.22em; font-size: 12px; }
 
+/* ---------- liquid-glass surfaces (HTML) ----------
+   .lg takes a tint via --tint: "r, g, b". The theme's .glass gets the same treatment, neutral-tinted. */
+.lg,
+.slidev-layout .glass {
+  --tint: 99, 102, 241;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid rgba(var(--tint), 0.45);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.45) 48%, rgba(var(--tint), 0.16) 100%),
+    rgba(var(--tint), 0.07);
+  backdrop-filter: blur(16px) saturate(170%);
+  -webkit-backdrop-filter: blur(16px) saturate(170%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.35),
+    inset 0 -8px 16px -12px rgba(var(--tint), 0.45),
+    0 10px 24px -12px rgba(var(--tint), 0.5),
+    0 2px 5px -3px rgba(26, 26, 46, 0.12);
+}
+.slidev-layout .glass { --tint: 120, 120, 160; }
+.lg::before,
+.slidev-layout .glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(120% 70% at 12% -18%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 58%);
+}
+.lg > *,
+.slidev-layout .glass > * { position: relative; z-index: 1; }
+.lg.indigo { --tint: 99, 102, 241; }
+.lg.cyan { --tint: 6, 182, 212; }
+.lg.amber { --tint: 245, 158, 11; }
+.lg.green { --tint: 16, 185, 129; }
+.lg.slate { --tint: 100, 116, 139; }
+.lg.violet { --tint: 139, 92, 246; }
+.lg.rose { --tint: 225, 29, 72; }

@@ -28,7 +28,7 @@ const focus = (i: number) => Math.min(props.step, 3) === i
         :style="{ top: `${i * SPACING}px` }"
       >
         <div class="check" :class="{ on: verified(i) }">✓</div>
-        <div class="body">
+        <div class="body lg" :class="focus(i) ? 'indigo' : 'slate'">
           <div class="head">
             <span class="name">{{ l.name }}</span>
             <span class="tag">{{ l.tag }}</span>
@@ -54,8 +54,7 @@ const focus = (i: number) => Math.min(props.step, 3) === i
   border: 1.5px dashed var(--slidev-theme-border); color: transparent; background: var(--slidev-theme-bg); transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
 .check.on { border: 1.5px solid #10b981; background: #10b981; color: white; transform: scale(1.05); }
 .hw .check { border-style: solid; border-color: var(--slidev-theme-ink-secondary); }
-.body { flex: 1; min-width: 0; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--slidev-theme-glass-border); background: var(--slidev-theme-glass-bg); }
-.focus .body { border-color: rgba(var(--slidev-theme-primary-rgb), 0.5); }
+.body { flex: 1; min-width: 0; padding: 8px 14px; }
 .head { display: flex; align-items: baseline; gap: 12px; }
 .name { font-family: 'Instrument Serif', serif; font-size: 28px; line-height: 1.1; color: var(--slidev-theme-ink); }
 .tag { font-family: 'Archivo', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slidev-theme-ink-secondary); }

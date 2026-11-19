@@ -8,9 +8,9 @@ const props = withDefaults(defineProps<{ step?: number }>(), { step: 99 })
 const on = (n: number) => props.step >= n
 
 const events = [
-  { t: 'Copy', s: 'writes buffer 0', k: 'copy' },
-  { t: 'Barrier', s: 'copy has finished', k: 'bar' },
-  { t: 'Read', s: 'reads buffer 0', k: 'read' },
+  { t: 'Copy', s: 'writes buffer 0', k: 'copy indigo' },
+  { t: 'Barrier', s: 'copy has finished', k: 'bar slate' },
+  { t: 'Read', s: 'reads buffer 0', k: 'read green' },
 ]
 </script>
 
@@ -18,7 +18,7 @@ const events = [
   <div class="vf">
     <div class="events">
       <template v-for="(e, i) in events" :key="e.t">
-        <div class="ev" :class="e.k">
+        <div class="ev lg" :class="e.k">
           <div class="ev-t">{{ e.t }}</div>
           <div class="ev-s">{{ e.s }}</div>
         </div>
@@ -51,10 +51,7 @@ const events = [
 .vf { display: flex; flex-direction: column; gap: 24px; margin-top: 16px; }
 
 .events { display: flex; align-items: center; justify-content: center; gap: 10px; }
-.ev { width: 200px; padding: 14px 16px; border-radius: 10px; border: 1.5px solid; text-align: center; }
-.ev.copy { border-color: #6366f1; background: rgba(99, 102, 241, 0.1); }
-.ev.bar { border-color: #64748b; background: rgba(100, 116, 139, 0.08); }
-.ev.read { border-color: #10b981; background: rgba(16, 185, 129, 0.12); }
+.ev { width: 200px; padding: 14px 16px; text-align: center; }
 .ev-t { font-family: 'Instrument Serif', serif; font-size: 28px; line-height: 1.1; color: var(--slidev-theme-ink); }
 .ev-s { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 13.5px; color: var(--slidev-theme-ink-secondary); }
 .hb { display: flex; flex-direction: column; align-items: center; color: var(--slidev-theme-ink-secondary); }
