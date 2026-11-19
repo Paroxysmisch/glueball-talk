@@ -7,7 +7,7 @@
 const props = withDefaults(defineProps<{ step?: number }>(), { step: 99 })
 const on = (n: number) => props.step >= n
 
-const devices = ['GPU 0', 'GPU 1', 'GPU 2', 'Accel. 3']
+const devices = ['GPU 0', 'GPU 1', 'GPU 2', 'GPU 3']
 const RH = 64
 const Y0 = 24
 const LX = 82
@@ -48,7 +48,7 @@ const TINT: Record<string, string> = { mm: '#6366f1', ar: '#06b6d4', ag: '#f59e0
     </g>
 
     <g class="warn" :class="{ on: on(3) }">
-      <text :x="LX + 250" :y="Y0 + 4 * RH + 6" class="warn-t">collective order mismatch → all four devices hang</text>
+      <text :x="LX + 250" :y="Y0 + 4 * RH + 6" class="warn-t">GPU 3 calls the collectives in a different order, so every GPU waits forever</text>
     </g>
   </svg>
 </template>
@@ -69,9 +69,9 @@ const TINT: Record<string, string> = { mm: '#6366f1', ar: '#06b6d4', ag: '#f59e0
 .links.on { opacity: 1; }
 .links line { stroke: var(--slidev-theme-ink); stroke-width: 1.4; stroke-dasharray: 4 3; opacity: 0.55; }
 .links circle { fill: var(--slidev-theme-ink); }
-.links.bad line { stroke: #e11d48; opacity: 1; stroke-width: 2; }
-.links.bad circle { fill: #e11d48; }
+.links.bad line { stroke: #e11d48; opacity: 0.55; stroke-width: 1.6; }
+.links.bad circle { fill: #e11d48; opacity: 0.7; }
 .warn { opacity: 0; transition: opacity 0.5s ease 0.3s; }
 .warn.on { opacity: 1; }
-.warn-t { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.06em; text-anchor: middle; fill: #e11d48; }
+.warn-t { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 17px; text-anchor: middle; fill: var(--slidev-theme-ink); }
 </style>
