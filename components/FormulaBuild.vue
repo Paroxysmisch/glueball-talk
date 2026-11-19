@@ -24,20 +24,19 @@ const d = (i: number) => ({ transitionDelay: on(1) ? `${i * STEP_MS}ms` : '0ms' 
     <div class="cols">
       <!-- IR -->
       <div class="ir glass">
-        <div class="micro-label cap">Softmax kernel · Triton IR (one row)</div>
+        <div class="micro-label cap">Softmax kernel · Triton IR</div>
         <div v-for="l in ir" :key="l.v" class="ir-line" :class="[l.c, { lit: on(1) }]" :style="d(l.i)">
           <span class="ssa">{{ l.v }}</span><span class="eq">=</span><span class="op">{{ l.op }}</span>
         </div>
         <div class="ir-line store"><span class="op">tt.store %output_ptrs, %out</span></div>
       </div>
 
-      <!-- the arrow arches over its label -->
+      <!-- straight arrow, label above it -->
       <div class="arrow" :class="{ on: on(1) }">
-        <svg viewBox="0 0 124 110" xmlns="http://www.w3.org/2000/svg">
-          <path d="M 6 92 C 24 6, 100 6, 116 86" class="arc" pathLength="1" />
-          <path d="M 118 96 L 111.2 87.1 L 121 85.2 Z" class="arc-head" />
-          <text x="62" y="62" class="arc-label">Z3 symbolic</text>
-          <text x="62" y="76" class="arc-label">execution</text>
+        <div class="arrow-label">Z3 symbolic<br>execution</div>
+        <svg viewBox="0 0 110 14" xmlns="http://www.w3.org/2000/svg">
+          <line x1="2" y1="7" x2="96" y2="7" class="shaft" pathLength="1" />
+          <path d="M 108 7 L 96 1.5 L 96 12.5 Z" class="arrow-head" />
         </svg>
       </div>
 
@@ -67,22 +66,23 @@ const d = (i: number) => ({ transitionDelay: on(1) ? `${i * STEP_MS}ms` : '0ms' 
 
 <style scoped>
 .fb { display: flex; flex-direction: column; gap: 18px; margin-top: 36px; }
-.cols { display: grid; grid-template-columns: 1.1fr 124px 1fr; align-items: center; gap: 8px; }
+.cols { display: grid; grid-template-columns: max-content 112px 1fr; align-items: center; gap: 14px; }
 .cap { font-size: 10px !important; opacity: 0.6; margin-bottom: 10px; }
 
-.ir { padding: 0.9em 1.1em !important; }
+.ir { padding: 0.9em 1.1em !important; width: max-content; overflow: visible !important; }
 .ir-line { font-family: 'JetBrains Mono', monospace; font-size: 10.6px; line-height: 2; color: var(--slidev-theme-ink-secondary); border-radius: 4px; padding: 0 6px; transition: background 0.4s ease, color 0.4s ease; white-space: nowrap; }
 .ssa { display: inline-block; min-width: 84px; color: var(--slidev-theme-ink); }
 .eq { margin: 0 6px; opacity: 0.5; }
 .ir-line.store { opacity: 0.5; }
 
+.arrow { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .arrow svg { width: 100%; height: auto; overflow: visible; }
-.arc { fill: none; stroke: var(--slidev-theme-primary); stroke-width: 1.8; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 0.9s cubic-bezier(0.4, 0, 0.2, 1); }
-.arc-head { fill: var(--slidev-theme-primary); opacity: 0; transition: opacity 0.2s ease; }
-.arc-label { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 700; text-anchor: middle; fill: var(--slidev-theme-ink-secondary); opacity: 0.35; transition: opacity 0.4s ease; }
-.arrow.on .arc { stroke-dashoffset: 0; }
-.arrow.on .arc-head { opacity: 1; transition-delay: 0.9s; }
-.arrow.on .arc-label { opacity: 1; fill: var(--slidev-theme-ink); }
+.arrow-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; line-height: 1.35; text-align: center; color: var(--slidev-theme-ink-secondary); opacity: 0.35; transition: opacity 0.4s ease; }
+.shaft { stroke: var(--slidev-theme-primary); stroke-width: 1.8; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+.arrow-head { fill: var(--slidev-theme-primary); opacity: 0; transition: opacity 0.2s ease; }
+.arrow.on .shaft { stroke-dashoffset: 0; }
+.arrow.on .arrow-head { opacity: 1; transition-delay: 0.6s; }
+.arrow.on .arrow-label { opacity: 1; color: var(--slidev-theme-ink); }
 
 .math { display: flex; align-items: center; gap: 10px; font-family: 'Instrument Serif', serif; font-size: 32px; color: var(--slidev-theme-ink); }
 .math.small { font-size: 20px; }
