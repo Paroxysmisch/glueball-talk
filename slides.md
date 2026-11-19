@@ -245,8 +245,6 @@ We also switched the two tools on and off. With both tools, the agent needs abou
 
 <SpeedupBars class="mt-2" />
 
-<Footnote n="">NVIDIA DGX Spark (GB10) · 6 optimisation rounds · models measured end to end, standalone kernels from Liger Kernels.</Footnote>
-
 <!--
 Second: is the verified code still fast?
 
