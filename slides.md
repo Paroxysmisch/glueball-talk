@@ -227,9 +227,9 @@ We also switched the two tools on and off. With both tools, the agent needs abou
 
 ---
 
-# And the code is still fast
+# Precise verification unlocks optimisations
 
-<p class="lede">Median end-to-end speed-up over human-expert Triton baseline.</p>
+<p class="lede">Median end-to-end speed-up over human-expert Triton baseline on held-out input shapes (best of four agents).</p>
 
 <SpeedupBars class="mt-2" />
 
@@ -288,16 +288,16 @@ The first direction is scale.
 clicks: 3
 ---
 
-# Direction 2 · Search that knows the rules
+# Direction 2 · Statistics-guided search
 
 <div class="grid grid-cols-[250px_1fr] gap-10 mt-4">
 <div class="points">
 
-<p><strong>Lesson from Mamba-2:</strong> agents tried many <em>valid</em> pipeline schedules, but the extra buffering usually cost more than it saved.</p>
+Search directly via LLM reasoning costs a lot of tokens.
 
-<p v-click="1">Search schedules with <strong>Bayesian optimisation</strong>: the LLM supplies the <strong>prior</strong>, real runs on the GPU supply the data…</p>
+<p v-click="1">Search schedules with <strong>Bayesian optimisation</strong>: the LLM supplies the <strong>prior</strong>, real runs on the GPU inform the <strong>posterior</strong>.</p>
 
-<p v-click="2">…and the LLM acts as the <strong>acquisition function</strong>, choosing what to run next. Fewer expensive LLM iterations and GPU runs.</p>
+<p v-click="2">The LLM also acts as the <strong>acquisition function</strong>, choosing what to run next.</p>
 
 </div>
 <div>
