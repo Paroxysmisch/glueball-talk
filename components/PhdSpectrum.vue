@@ -73,11 +73,11 @@ const timeline = [
 .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .card { padding: 12px 14px !important; display: flex; flex-direction: column; gap: 6px; }
 .head { display: flex; align-items: center; gap: 8px; }
-.n { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: var(--slidev-theme-primary); }
+.n { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--slidev-theme-primary); }
 .area { font-size: 10px !important; opacity: 0.6; }
 .t { font-family: 'Instrument Serif', serif; font-size: 21px; line-height: 1.1; color: var(--slidev-theme-ink); }
 .now { font-family: 'Archivo', sans-serif; font-weight: 600; font-size: 13px; color: var(--slidev-theme-primary); display: flex; align-items: center; gap: 8px; }
-.tag { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; font-weight: 700; padding: 1px 6px; border-radius: 4px; background: rgba(var(--slidev-theme-primary-rgb), 0.12); }
+.tag { font-family: var(--mono); font-size: 9.5px; font-weight: 700; padding: 1px 6px; border-radius: 4px; background: rgba(var(--slidev-theme-primary-rgb), 0.12); }
 .next { font-family: 'Source Serif 4', serif; font-size: 12.5px; line-height: 1.4; color: var(--slidev-theme-ink-secondary); }
 
 .goal { text-align: center; font-family: 'Instrument Serif', serif; font-style: italic; font-size: 20px; color: var(--slidev-theme-ink); }
@@ -85,7 +85,7 @@ const timeline = [
 .tl { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; padding-top: 10px; border-top: 1px solid var(--slidev-theme-border); }
 .tl-item { display: flex; flex-direction: column; gap: 2px; position: relative; padding-left: 14px; }
 .dot { position: absolute; left: 0; top: 4px; width: 7px; height: 7px; border-radius: 50%; background: var(--slidev-theme-secondary); }
-.when { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: var(--slidev-theme-ink); }
+.when { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--slidev-theme-ink); }
 .what { font-family: 'Source Serif 4', serif; font-size: 12.5px; line-height: 1.35; color: var(--slidev-theme-ink-secondary); }
 
 .fade { opacity: 0; transform: translateY(8px); transition: all 0.5s ease; }

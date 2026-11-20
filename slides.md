@@ -7,6 +7,11 @@ info: |
 transition: morph
 colorSchema: light
 mdc: true
+fonts:
+  sans: Archivo
+  serif: Instrument Serif
+  mono: Geist Mono
+  weights: '300,400,500,600,700'
 themeConfig:
   primary: '#6366f1'
   secondary: '#06b6d4'

@@ -75,7 +75,7 @@ const delta = (a: number, b: number) => (b - a > 0 ? `+${b - a}` : b - a < 0 ? `
 .deltas { display: grid; grid-template-columns: repeat(4, 1fr); margin-left: 26px; margin-bottom: 14px; text-align: center; }
 .plot { display: grid; grid-template-columns: 26px 1fr; height: 140px; }
 .yaxis { position: relative; }
-.yaxis span { position: absolute; right: 6px; transform: translateY(50%); font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--slidev-theme-ink-secondary); }
+.yaxis span { position: absolute; right: 6px; transform: translateY(50%); font-family: var(--mono); font-size: 10px; color: var(--slidev-theme-ink-secondary); }
 .area { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--slidev-theme-ink); }
 .grid { position: absolute; left: 0; right: 0; border-top: 1px solid var(--slidev-theme-border-soft); }
 .group { position: relative; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; }
@@ -84,10 +84,10 @@ const delta = (a: number, b: number) => (b - a > 0 ? `+${b - a}` : b - a < 0 ? `
 .on .bar { height: var(--h); }
 .bar.base { background: #cbd2dd; }
 .bar.gb { background: linear-gradient(180deg, var(--slidev-theme-secondary), var(--slidev-theme-primary)); box-shadow: 0 6px 14px -8px rgba(var(--slidev-theme-primary-rgb), 0.8); }
-.bar .v { position: absolute; left: 50%; bottom: 100%; transform: translate(-50%, -3px); font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--slidev-theme-ink-secondary); opacity: 0; transition: opacity 0.3s ease; transition-delay: calc(var(--d) + 0.7s); }
+.bar .v { position: absolute; left: 50%; bottom: 100%; transform: translate(-50%, -3px); font-family: var(--mono); font-size: 11px; color: var(--slidev-theme-ink-secondary); opacity: 0; transition: opacity 0.3s ease; transition-delay: calc(var(--d) + 0.7s); }
 .bar.gb .v { color: var(--slidev-theme-ink); font-weight: 700; }
 .on .bar .v { opacity: 1; }
-.delta { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: #059669; background: rgba(16, 185, 129, 0.1); border-radius: 4px; padding: 1px 6px; opacity: 0; transition: opacity 0.3s ease; transition-delay: var(--d); }
+.delta { font-family: var(--mono); font-size: 11px; font-weight: 700; color: #059669; background: rgba(16, 185, 129, 0.1); border-radius: 4px; padding: 1px 6px; opacity: 0; transition: opacity 0.3s ease; transition-delay: var(--d); }
 .on .delta { opacity: 1; }
 
 .xaxis { display: grid; grid-template-columns: repeat(4, 1fr); margin-left: 26px; margin-top: 6px; }

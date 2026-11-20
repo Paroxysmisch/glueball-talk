@@ -57,5 +57,5 @@ svg { width: 100%; height: 100%; overflow: visible; }
 .core-sub { font-family: 'Archivo', sans-serif; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--slidev-theme-ink-secondary); }
 .node { position: absolute; transform: translate(-50%, -50%); padding: 0.55em 1em !important; text-align: center; width: 168px; }
 .node-label { font-family: 'Archivo', sans-serif; font-weight: 600; font-size: 15px; color: var(--slidev-theme-ink); }
-.node-sub { white-space: nowrap; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--slidev-theme-ink-secondary); }
+.node-sub { white-space: nowrap; font-family: var(--mono); font-size: 10px; color: var(--slidev-theme-ink-secondary); }
 </style>

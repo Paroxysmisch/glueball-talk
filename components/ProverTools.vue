@@ -49,19 +49,19 @@ const { on, instant } = useAutoplay(250)
 <style scoped>
 .pt { display: flex; flex-direction: column; align-items: center; gap: 18px; margin-top: 30px; }
 .z3-hub { display: flex; align-items: center; gap: 10px; }
-.z3 { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 13px; padding: 3px 9px; border-radius: 5px; background: var(--slidev-theme-ink); color: var(--slidev-theme-bg); }
+.z3 { font-family: var(--mono); font-weight: 700; font-size: 13px; padding: 3px 9px; border-radius: 5px; background: var(--slidev-theme-ink); color: var(--slidev-theme-bg); }
 .hub-t { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 14px; color: var(--slidev-theme-ink-secondary); }
 
 .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; width: 780px; }
 .card { padding: 16px 20px !important; display: flex; flex-direction: column; gap: 8px; text-align: left; }
 .head { display: flex; align-items: center; gap: 8px; }
 .head .micro-label { font-size: 10px !important; opacity: 0.7; }
-.n { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: var(--slidev-theme-primary); }
+.n { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--slidev-theme-primary); }
 .t { font-family: 'Instrument Serif', serif; font-size: 28px; line-height: 1.1; color: var(--slidev-theme-ink); }
 .cap { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 13.5px; color: var(--slidev-theme-ink-secondary); }
 
 .mini { height: 74px; display: flex; align-items: center; gap: 10px; }
-.ir { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; line-height: 1.75; color: var(--slidev-theme-ink-secondary); white-space: nowrap; }
+.ir { font-family: var(--mono); font-size: 9.5px; line-height: 1.75; color: var(--slidev-theme-ink-secondary); white-space: nowrap; }
 .arrow { font-size: 20px; color: var(--slidev-theme-primary); }
 .frac { display: inline-flex; flex-direction: column; align-items: center; font-family: 'Instrument Serif', serif; font-size: 19px; color: var(--slidev-theme-ink); white-space: nowrap; }
 .frac .bar { align-self: stretch; height: 1.2px; background: var(--slidev-theme-ink); margin: 2px 0; }

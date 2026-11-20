@@ -78,12 +78,12 @@ const on = (n: number) => props.step >= n
 .cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 26px; }
 .col { display: flex; flex-direction: column; gap: 8px; }
 .cap { font-size: 10px !important; opacity: 0.75; display: flex; align-items: center; gap: 8px; }
-.n { font-family: 'JetBrains Mono', monospace; color: var(--slidev-theme-primary); letter-spacing: 0; }
+.n { font-family: var(--mono); color: var(--slidev-theme-primary); letter-spacing: 0; }
 .replay { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 12.5px; color: var(--slidev-theme-ink-secondary); }
 
 /* ① timing diagram */
 .bug { width: 100%; height: auto; overflow: visible; }
-.bt { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; text-anchor: middle; fill: var(--slidev-theme-ink); }
+.bt { font-family: var(--mono); font-size: 9.5px; text-anchor: middle; fill: var(--slidev-theme-ink); }
 .clash { stroke: rgba(225, 29, 72, 0.6); stroke-width: 1.2; stroke-dasharray: 3 2; }
 .clash-link { stroke: rgba(225, 29, 72, 0.55); stroke-width: 1.2; stroke-dasharray: 2 3; }
 .wait { stroke: var(--slidev-theme-ink); stroke-width: 1.2; stroke-dasharray: 3 3; opacity: 0.7; }
@@ -102,7 +102,7 @@ const on = (n: number) => props.step >= n
 .edge.missing .line::after { display: none; }
 .edge.missing .x { color: #e11d48; font-style: normal; margin-right: 2px; }
 .query { display: flex; align-items: center; gap: 8px; margin-top: 4px; font-family: 'Source Serif 4', serif; font-size: 12.5px; color: var(--slidev-theme-ink); }
-.z3 { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 11px; padding: 2px 7px; border-radius: 4px; background: var(--slidev-theme-ink); color: var(--slidev-theme-bg); }
+.z3 { font-family: var(--mono); font-weight: 700; font-size: 11px; padding: 2px 7px; border-radius: 4px; background: var(--slidev-theme-ink); color: var(--slidev-theme-bg); }
 
 /* ③ ordering in logical time */
 .order { list-style: none; margin: 0; padding: 0 0 0 4px; position: relative; display: flex; flex-direction: column; gap: 6px; font-family: 'Source Serif 4', serif; font-size: 13.5px; color: var(--slidev-theme-ink); counter-reset: t; }
@@ -116,7 +116,7 @@ const on = (n: number) => props.step >= n
 /* stamps */
 .stamp { display: inline-flex; align-items: baseline; gap: 10px; align-self: flex-start; padding: 2px 12px; border: 2.5px solid; border-radius: 9px; opacity: 0; transform: scale(1.7) rotate(-8deg); transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s; }
 .stamp.on { opacity: 1; transform: scale(1) rotate(-2deg); }
-.stamp-k { font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 18px; letter-spacing: 0.08em; }
+.stamp-k { font-family: var(--mono); font-weight: 800; font-size: 18px; letter-spacing: 0.08em; }
 .stamp-v { font-family: 'Source Serif 4', serif; font-size: 12.5px; color: var(--slidev-theme-ink); }
 .sat { border-color: #e11d48; color: #e11d48; background: rgba(225, 29, 72, 0.06); }
 .unsat { border-color: #10b981; color: #059669; background: rgba(16, 185, 129, 0.07); }

@@ -58,5 +58,5 @@ const focus = (i: number) => Math.min(props.step, 3) === i
 .head { display: flex; align-items: baseline; gap: 12px; }
 .name { font-family: 'Instrument Serif', serif; font-size: 28px; line-height: 1.1; color: var(--slidev-theme-ink); }
 .tag { font-family: 'Archivo', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slidev-theme-ink-secondary); }
-.code { display: block; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--slidev-theme-ink-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: none !important; border: none !important; padding: 0 !important; }
+.code { display: block; font-family: var(--mono); font-size: 10.5px; color: var(--slidev-theme-ink-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: none !important; border: none !important; padding: 0 !important; }
 </style>

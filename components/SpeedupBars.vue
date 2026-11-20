@@ -78,10 +78,10 @@ const gap1 = `${((AXIS + 2.6) / BROKEN) * 100}%`
   -webkit-mask: linear-gradient(90deg, #000 var(--g0), transparent var(--g0), transparent var(--g1), #000 var(--g1));
   mask: linear-gradient(90deg, #000 var(--g0), transparent var(--g0), transparent var(--g1), #000 var(--g1));
 }
-.val { position: absolute; top: 50%; transform: translateY(-50%); font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 14px; color: var(--slidev-theme-ink); white-space: nowrap; opacity: 0; transition: opacity 0.4s ease 0.9s; }
+.val { position: absolute; top: 50%; transform: translateY(-50%); font-family: var(--mono); font-weight: 700; font-size: 14px; color: var(--slidev-theme-ink); white-space: nowrap; opacity: 0; transition: opacity 0.4s ease 0.9s; }
 .grown .val { opacity: 1; }
 .instant .bar, .instant .val { transition: none !important; }
 .note { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 12.5px; line-height: 1.25; color: var(--slidev-theme-ink-secondary); }
 .axis { height: 18px; }
-.ticks span { position: absolute; transform: translateX(-50%); font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--slidev-theme-ink-secondary); }
+.ticks span { position: absolute; transform: translateX(-50%); font-family: var(--mono); font-size: 10px; color: var(--slidev-theme-ink-secondary); }
 </style>

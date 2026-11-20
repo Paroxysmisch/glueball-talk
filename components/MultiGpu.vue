@@ -63,7 +63,7 @@ const TINT: Record<string, string> = { mm: '#6366f1', ar: '#06b6d4', ag: '#f59e0
 .ar { fill: #d2eff4; stroke: #06b6d4; }
 .ag { fill: #fbeccd; stroke: #f59e0b; }
 .blk.dim { fill: transparent; stroke: var(--slidev-theme-border); stroke-dasharray: 3 3; }
-.bt { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-anchor: middle; fill: var(--slidev-theme-ink); transition: opacity 0.4s; }
+.bt { font-family: var(--mono); font-size: 10px; text-anchor: middle; fill: var(--slidev-theme-ink); transition: opacity 0.4s; }
 .bt.dim { opacity: 0; }
 .links { opacity: 0; transition: opacity 0.6s ease; }
 .links.on { opacity: 1; }

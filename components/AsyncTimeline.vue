@@ -94,9 +94,9 @@ const at = (x: number, extra = 0) => ({ transitionDelay: on.value ? `${((x - X0)
 .lane-sub { font-family: 'Source Serif 4', Georgia, serif; font-style: italic; font-size: 12px; fill: var(--slidev-theme-ink-secondary); }
 .divider { stroke: var(--slidev-theme-border); stroke-width: 1; }
 .axis { stroke: var(--slidev-theme-ink-secondary); stroke-width: 1; opacity: 0.6; }
-.axis-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; fill: var(--slidev-theme-ink-secondary); }
+.axis-label { font-family: var(--mono); font-size: 11px; fill: var(--slidev-theme-ink-secondary); }
 
-.blk-text { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-anchor: middle; fill: var(--slidev-theme-ink); }
+.blk-text { font-family: var(--mono); font-size: 11px; text-anchor: middle; fill: var(--slidev-theme-ink); }
 
 .dep { fill: none; stroke: var(--slidev-theme-ink); stroke-width: 1.3; stroke-dasharray: 3 3; opacity: 0.6; }
 .dep-head { fill: var(--slidev-theme-ink); opacity: 0.6; }

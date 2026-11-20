@@ -70,8 +70,8 @@ const survivors = () => cells.filter(x => x.res && x.safe).length
 <style scoped>
 .sg { display: grid; grid-template-columns: 110px repeat(8, 1fr); gap: 5px; align-items: center; }
 .corner { font-size: 8.5px !important; opacity: 0.5; letter-spacing: 0.08em !important; }
-.colh { text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--slidev-theme-ink-secondary); }
-.rowh { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--slidev-theme-ink-secondary); }
+.colh { text-align: center; font-family: var(--mono); font-size: 11px; color: var(--slidev-theme-ink-secondary); }
+.rowh { font-family: var(--mono); font-size: 10.5px; color: var(--slidev-theme-ink-secondary); }
 .cell { position: relative; height: 30px; border-radius: 4px; transition: all 0.5s ease; display: grid; place-items: center; }
 .cell.open { background: rgba(var(--slidev-theme-primary-rgb), 0.18); border: 1px solid rgba(var(--slidev-theme-primary-rgb), 0.45); }
 .cell.res { background: rgba(100, 116, 139, 0.10); border: 1px solid rgba(100, 116, 139, 0.18);
@@ -79,7 +79,7 @@ const survivors = () => cells.filter(x => x.res && x.safe).length
 .cell.unsafe { background: rgba(225, 29, 72, 0.08); border: 1px solid rgba(225, 29, 72, 0.4);
   background-image: linear-gradient(to top right, transparent calc(50% - 0.6px), rgba(225, 29, 72, 0.7) 50%, transparent calc(50% + 0.6px)); }
 .cell.top { background: var(--slidev-theme-primary); border: 1px solid var(--slidev-theme-primary); box-shadow: 0 0 0 4px rgba(var(--slidev-theme-primary-rgb), 0.15); }
-.rank { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: white; }
+.rank { font-family: var(--mono); font-size: 11px; font-weight: 700; color: white; }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 14px; }
 .lgd { display: inline-flex; align-items: center; gap: 7px; font-family: 'Source Serif 4', serif; font-size: 12.5px; color: var(--slidev-theme-ink-secondary); }
 .sw { display: inline-block; width: 14px; height: 14px; border-radius: 3px; }

@@ -65,9 +65,9 @@ onMounted(() => setTimeout(() => (grown.value = true), 250))
 .bar.z3 { background: linear-gradient(90deg, rgba(var(--slidev-theme-primary-rgb), 0.25), var(--slidev-theme-primary)); }
 .bar.sym { background: linear-gradient(90deg, rgba(var(--slidev-theme-secondary-rgb), 0.25), var(--slidev-theme-secondary)); }
 .bar.none { background: linear-gradient(90deg, rgba(225, 29, 72, 0.25), #e11d48); opacity: 0.8; }
-.val { position: absolute; top: 50%; transform: translateY(-50%); font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 13px; color: var(--slidev-theme-ink); white-space: nowrap; }
+.val { position: absolute; top: 50%; transform: translateY(-50%); font-family: var(--mono); font-weight: 700; font-size: 13px; color: var(--slidev-theme-ink); white-space: nowrap; }
 .val.zero { color: #059669; }
-.found { text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--slidev-theme-ink); white-space: nowrap; }
+.found { text-align: right; font-family: var(--mono); font-size: 14px; color: var(--slidev-theme-ink); white-space: nowrap; }
 .found span { font-size: 10px; color: var(--slidev-theme-ink-secondary); margin-left: 2px; }
 .fade { opacity: 0; transform: translateY(8px); transition: all 0.5s ease; }
 .fade.on { opacity: 1; transform: none; }

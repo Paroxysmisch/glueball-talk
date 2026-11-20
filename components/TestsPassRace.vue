@@ -50,7 +50,7 @@ const props = withDefaults(defineProps<{ step?: number }>(), { step: 99 })
 }
 .tick { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; background: #10b981; color: white; font-size: 26px; font-weight: 700; }
 .badge-title { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 24px; color: #047857; }
-.badge-sub { white-space: nowrap; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--slidev-theme-ink-secondary); }
+.badge-sub { white-space: nowrap; font-family: var(--mono); font-size: 12px; color: var(--slidev-theme-ink-secondary); }
 html.dark .badge-title { color: #34d399; }
 
 .zoomed .badge { left: 0; top: 0; transform: translate(0, 0) scale(0.72); transform-origin: top left; }
@@ -67,11 +67,11 @@ html.dark .badge-title { color: #34d399; }
 .lens-foot { margin: 6px 0 0 !important; font-size: 13px !important; font-style: italic; }
 
 .lbl { font-family: 'Archivo', sans-serif; font-weight: 600; font-size: 13px; fill: var(--slidev-theme-ink); }
-.lbl-sub { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: var(--slidev-theme-ink-secondary); }
+.lbl-sub { font-family: var(--mono); font-size: 10px; fill: var(--slidev-theme-ink-secondary); }
 .mid { stroke: var(--slidev-theme-border); }
 .copy { fill: rgba(99, 102, 241, 0.18); stroke: #6366f1; stroke-width: 1.2; }
 .read { fill: rgba(16, 185, 129, 0.16); stroke: #10b981; stroke-width: 1.2; }
-.txt { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-anchor: middle; fill: var(--slidev-theme-ink); }
+.txt { font-family: var(--mono); font-size: 11px; text-anchor: middle; fill: var(--slidev-theme-ink); }
 .overlap { fill: rgba(225, 29, 72, 0); stroke: rgba(225, 29, 72, 0); stroke-width: 1.5; transition: all 0.6s ease 0.1s; }
 .race-txt { font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 12px; letter-spacing: 0.18em; text-anchor: middle; fill: #e11d48; opacity: 0; transition: opacity 0.5s ease 0.3s; }
 .raced .overlap { fill: rgba(225, 29, 72, 0.28); stroke: #e11d48; animation: pulse 1.6s ease-in-out 0.7s infinite; }

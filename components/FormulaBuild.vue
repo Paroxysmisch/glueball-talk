@@ -70,14 +70,14 @@ const d = (i: number) => ({ transitionDelay: on(1) ? `${i * STEP_MS}ms` : '0ms' 
 .cap { font-size: 10px !important; opacity: 0.6; margin-bottom: 10px; }
 
 .ir { padding: 0.9em 1.1em !important; width: max-content; overflow: visible !important; }
-.ir-line { font-family: 'JetBrains Mono', monospace; font-size: 10.6px; line-height: 2; color: var(--slidev-theme-ink-secondary); border-radius: 4px; padding: 0 6px; transition: background 0.4s ease, color 0.4s ease; white-space: nowrap; }
+.ir-line { font-family: var(--mono); font-size: 10.6px; line-height: 2; color: var(--slidev-theme-ink-secondary); border-radius: 4px; padding: 0 6px; transition: background 0.4s ease, color 0.4s ease; white-space: nowrap; }
 .ssa { display: inline-block; min-width: 84px; color: var(--slidev-theme-ink); }
 .eq { margin: 0 6px; opacity: 0.5; }
 .ir-line.store { opacity: 0.5; }
 
 .arrow { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .arrow svg { width: 100%; height: auto; overflow: visible; }
-.arrow-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; line-height: 1.35; text-align: center; color: var(--slidev-theme-ink-secondary); opacity: 0.35; transition: opacity 0.4s ease; }
+.arrow-label { font-family: var(--mono); font-size: 10px; font-weight: 700; line-height: 1.35; text-align: center; color: var(--slidev-theme-ink-secondary); opacity: 0.35; transition: opacity 0.4s ease; }
 .shaft { stroke: var(--slidev-theme-primary); stroke-width: 1.8; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
 .arrow-head { fill: var(--slidev-theme-primary); opacity: 0; transition: opacity 0.2s ease; }
 .arrow.on .shaft { stroke-dashoffset: 0; }
