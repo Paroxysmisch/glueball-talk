@@ -4,7 +4,7 @@
  * Arms: both tools · Z3 library only · symbolic execution only · neither (raw model).
  * step 0: average tokens to find the bug · 1: false positives on bug-free code
  */
-import { onMounted, ref } from 'vue'
+import { useAutoplay } from '../utils/autoplay'
 const props = withDefaults(defineProps<{ step?: number }>(), { step: 99 })
 
 const arms = [
@@ -15,12 +15,12 @@ const arms = [
 ]
 const TOK_MAX = 2.0
 const FP_MAX = 8
-const grown = ref(false)
-onMounted(() => setTimeout(() => (grown.value = true), 250))
+// bars grow when the slide appears (not when it is pre-mounted), like slide 9
+const { on: grown, instant } = useAutoplay(300)
 </script>
 
 <template>
-  <div class="ab" :class="{ grown }">
+  <div class="ab" :class="{ grown, instant }">
     <div class="panel">
       <div class="micro-label cap">Average tokens to find the bug <span class="dir">lower is better</span></div>
       <div v-for="(a, i) in arms" :key="a.k" class="row">
@@ -55,6 +55,9 @@ onMounted(() => setTimeout(() => (grown.value = true), 250))
 .track { position: relative; height: 22px; }
 .bar { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 0 4px 4px 0; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
 .grown .bar, .fade.on .bar { width: var(--w); }
+.val { opacity: 0; transition: opacity 0.3s ease 0.9s; }
+.grown .val { opacity: 1; }
+.instant .bar, .instant .val, .instant.fade { transition: none !important; }
 .bar.both { background: linear-gradient(90deg, rgba(16, 185, 129, 0.3), #10b981); }
 .bar.z3 { background: linear-gradient(90deg, rgba(var(--slidev-theme-primary-rgb), 0.25), var(--slidev-theme-primary)); }
 .bar.sym { background: linear-gradient(90deg, rgba(var(--slidev-theme-secondary-rgb), 0.25), var(--slidev-theme-secondary)); }

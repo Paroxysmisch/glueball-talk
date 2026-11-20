@@ -2,7 +2,7 @@
 /**
  * Slide 4 — a green "all tests pass" badge; zoom in on one schedule
  * where an async copy and a read overlap on the same buffer.
- * step 0: badge · 1: zoom into timeline · 2: overlap turns red
+ * step 0: badge · 1: zoom into timeline · 2: the overlap is hatched (same style as the race on slide 8)
  */
 const props = withDefaults(defineProps<{ step?: number }>(), { step: 99 })
 </script>
@@ -20,6 +20,13 @@ const props = withDefaults(defineProps<{ step?: number }>(), { step: 99 })
     <div class="lens glass">
       <div class="lens-head micro-label">Shared memory race</div>
       <svg viewBox="0 0 560 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- same hatched style as the race on slide 8 -->
+          <pattern id="tpr-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="6" height="6" fill="rgba(225, 29, 72, 0.07)" />
+            <line x1="0" y1="0" x2="0" y2="6" stroke="rgba(225, 29, 72, 0.35)" stroke-width="2" />
+          </pattern>
+        </defs>
         <text x="0" y="34" class="lbl">async copy</text>
         <text x="0" y="50" class="lbl-sub">writes buf 0</text>
         <text x="0" y="94" class="lbl">consumer</text>
@@ -32,9 +39,12 @@ const props = withDefaults(defineProps<{ step?: number }>(), { step: 99 })
         <GlassRect :x="330" :y="78" :w="200" :h="34" :rx="7" tint="#10b981" />
         <text x="430" y="100" class="txt">read buf 0</text>
 
-        <!-- overlap -->
-        <rect x="330" y="14" width="50" height="102" rx="4" class="overlap" />
-        <text x="355" y="8" class="race-txt">RACE</text>
+        <!-- overlap: the part of the copy and the read that touch buffer 0 at the same time -->
+        <g class="overlap">
+          <rect x="330" y="16" width="50" height="38" rx="6" fill="url(#tpr-hatch)" class="clash" />
+          <rect x="330" y="76" width="50" height="38" rx="6" fill="url(#tpr-hatch)" class="clash" />
+          <text x="355" y="9" class="race-txt">race</text>
+        </g>
       </svg>
     </div>
   </div>
@@ -72,9 +82,8 @@ html.dark .badge-title { color: #34d399; }
 .copy { fill: rgba(99, 102, 241, 0.18); stroke: #6366f1; stroke-width: 1.2; }
 .read { fill: rgba(16, 185, 129, 0.16); stroke: #10b981; stroke-width: 1.2; }
 .txt { font-family: var(--mono); font-size: 11px; text-anchor: middle; fill: var(--slidev-theme-ink); }
-.overlap { fill: rgba(225, 29, 72, 0); stroke: rgba(225, 29, 72, 0); stroke-width: 1.5; transition: all 0.6s ease 0.1s; }
-.race-txt { font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 12px; letter-spacing: 0.18em; text-anchor: middle; fill: #e11d48; opacity: 0; transition: opacity 0.5s ease 0.3s; }
-.raced .overlap { fill: rgba(225, 29, 72, 0.28); stroke: #e11d48; animation: pulse 1.6s ease-in-out 0.7s infinite; }
-.raced .race-txt { opacity: 1; }
-@keyframes pulse { 50% { fill: rgba(225, 29, 72, 0.12); } }
+.overlap { opacity: 0; transition: opacity 0.6s ease 0.1s; }
+.clash { stroke: rgba(225, 29, 72, 0.6); stroke-width: 1.2; stroke-dasharray: 3 2; }
+.race-txt { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 15px; text-anchor: middle; fill: #e11d48; }
+.raced .overlap { opacity: 1; }
 </style>
