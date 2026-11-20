@@ -186,15 +186,13 @@ clicks: 3
 <VerifyFigure :step="$clicks" />
 
 <!--
-For hardware behaviour, we built a Gluon-to-Z3 library. Here's a real example.
+For hardware behaviour, we built a Gluon-to-Z3 library. Here's a real example: a two-buffer pipeline. It starts copying tile 0 into buffer 0; then, in the loop, it prefetches the next tile into buffer 1, waits, and reads buffer 0.
 
-Two copies are in flight, into buffers 0 and 1. Before reading buffer 0, the consumer waits, but this wait only blocks while more than two copies are in flight. That's already true, so it returns at once, and the read of buffer 0 overlaps copy 0. Whether that actually breaks depends on timing, so tests can easily miss it.
+[click] The agent turns each of these operations into an event for Z3, with the rules about what must happen before what. The read comes after the wait. But this wait only blocks while more than two copies are in flight, so nothing orders it after either copy finishing. The agent asks Z3: can the read come before copy 0 is done?
 
-[click] The agent describes the same events to Z3, with the rules about what must happen before what. The read comes after the wait, but nothing orders the wait after either copy is done. The agent asks Z3: can the read come before copy 0 is done?
+[click] Z3 says yes, and gives a concrete ordering. Play it: both copies start, the wait returns straight away, the read of buffer 0 happens while copy 0 is still writing it, and only then does copy 0 finish. The agent replays this on the real GPU to confirm the race. Whether it actually breaks depends on timing, so tests can easily miss it.
 
-[click] Z3 says yes, and gives a concrete ordering. The agent replays it on the real GPU to confirm the race.
-
-[click] With the fix, waiting until at most one copy is in flight, Z3 finds no such ordering. That is a proof there is no race.
+[click] The fix is one character: wait until at most one copy is in flight. Now copy 0 must finish before the wait returns, and Z3 finds no such ordering. That is a proof there is no race.
 -->
 
 ---
@@ -251,16 +249,16 @@ Mamba-2 only matched Triton: Triton's schedule there is already very good.
 clicks: 4
 ---
 
-# Direction 1 · Many GPUs, many chips
+# Direction 1 · Extension to distributed kernels
 
 <div class="grid grid-cols-[260px_1fr] gap-10 mt-4 items-center">
 <div class="points">
 
-<p>Real training and inference run across many GPUs, and increasingly across <strong>different accelerators</strong>.</p>
+<p>Real training and inference run across many GPUs, and increasingly across <strong>heterogeneous accelerators</strong>.</p>
 
 <div v-click="3">
 
-- mismatched / skipped collectives
+- mismatched or skipped collectives
 - deadlocks across devices
 - communication / compute races
 
