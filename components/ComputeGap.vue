@@ -5,11 +5,9 @@
  *       (values decoded from the "counts-over-time-cumulative" chart of
  *        https://epoch.ai/publications/model-counts-compute-thresholds; the same decoding reproduces the
  *        article's quoted 10^26 figures: ~34 by 2027, ~239 by 2030).
- * Right: where ~100x more training compute per year by 2030 could come from (log scale):
- *   compute needed ~100x  (our estimate from Epoch's projections — see speaker notes)
- *   data-centre electricity ~2.3x (IEA Energy & AI 2025: 415 TWh in 2024 -> 945 TWh in 2030)
- *   process node <=1.15x at the same power (TSMC A14 vs N2, production 2028)
- *   left for architecture + software: 100 / (2.3 x 1.15) ~ 40x
+ * Right: AI 2027 compute forecast (Section 1): global AI compute vs AI datacentre power, 2023 -> 2027,
+ *   normalised to 2023 (log scale): compute x25, power x12, so compute per watt only ~x2.
+ *   Plus TSMC A14 vs N2: at most +15% speed at the same power (production 2028).
  * Animates in when the slide appears.
  */
 import { useAutoplay } from '../utils/autoplay'
@@ -25,13 +23,21 @@ const models = [
 ]
 const MAXM = 140
 
-const gap = [
-  { k: 'need', t: 'Training compute needed / year', s: '2025 to 2030', v: 100, l: '~100×' },
-  { k: 'power', t: 'Data-centre electricity', s: 'IEA, 2024 to 2030', v: 2.3, l: '~2.3×' },
-  { k: 'node', t: 'Process node, same power', s: 'TSMC A14 vs N2', v: 1.15, l: '≤1.15×' },
-  { k: 'rest', t: 'Left for architecture & software', s: '100 ÷ (2.3 × 1.15)', v: 38, l: '~40×' },
+// AI 2027 compute forecast, Section 1 table (end of year): global AI compute stock in H100-equivalents and
+// total AI datacentre power. Normalised to 2023 = 1x. https://ai-2027.com/research/compute-forecast
+const YEARS = ['2023', '2024', '2025', '2026', '2027']
+const H100E = [4, 8.5, 18, 40, 100] // millions
+const GW = [5, 9, 15, 29, 62]
+const series = [
+  { k: 'compute', t: 'AI compute', v: H100E.map(x => x / H100E[0]) },
+  { k: 'power', t: 'AI datacentre power (62 GW)', v: GW.map(x => x / GW[0]) },
+  { k: 'eff', t: 'compute per watt', v: H100E.map((x, i) => (x / H100E[0]) / (GW[i] / GW[0])) },
 ]
-const logw = (v: number) => (Math.log10(v) / 2) * 100 // 1x → 0%, 100x → 100%
+const LW = 470, LH = 100, LX = 30, LY = 8 // plot box inside the SVG
+const xs = (i: number) => LX + (i / (YEARS.length - 1)) * (LW - LX - 190)
+const ys = (v: number) => LY + LH - (Math.log10(v) / Math.log10(30)) * LH
+const pathOf = (v: number[]) => v.map((y, i) => `${i ? 'L' : 'M'}${xs(i).toFixed(1)},${ys(y).toFixed(1)}`).join(' ')
+const endLabel = (v: number[]) => `×${v[v.length - 1] >= 10 ? Math.round(v[v.length - 1]) : v[v.length - 1].toFixed(1)}`
 </script>
 
 <template>
@@ -51,22 +57,24 @@ const logw = (v: number) => (Math.log10(v) / 2) * 100 // 1x → 0%, 100x → 100
       </div>
     </div>
 
-    <!-- right: where would ~100x come from? -->
+    <!-- right: AI 2027 forecast: growth is being bought with power -->
     <div class="panel">
       <div class="head">
-        <span class="t">Where would ~100× more compute come from?</span>
-        <span class="s">growth factor to 2030, log scale</span>
+        <span class="t">Growth is being bought with power</span>
+        <span class="s">AI 2027 forecast, relative to 2023 · log scale</span>
       </div>
-      <div class="gap">
-        <div v-for="(g, i) in gap" :key="g.k" class="row" :class="g.k">
-          <div class="lab"><span class="lt">{{ g.t }}</span><span class="ls">{{ g.s }}</span></div>
-          <div class="track">
-            <div class="gbar" :style="{ '--w': `${logw(g.v)}%`, '--d': `${0.6 + i * 0.25}s` }" />
-            <span class="gv" :style="{ left: `calc(${logw(g.v)}% + 8px)`, '--d': `${0.6 + i * 0.25 + 0.7}s` }">{{ g.l }}</span>
-          </div>
-        </div>
-        <div class="ticks"><span v-for="t in [1, 10, 100]" :key="t" :style="{ left: `${logw(t)}%` }">{{ t }}×</span></div>
-      </div>
+      <svg :viewBox="`0 0 ${LW} ${LY + LH + 22}`" class="lines" xmlns="http://www.w3.org/2000/svg">
+        <line v-for="t in [1, 10]" :key="'g' + t" :x1="LX" :x2="xs(4)" :y1="ys(t)" :y2="ys(t)" class="grid" />
+        <text v-for="t in [1, 10]" :key="'t' + t" :x="LX - 6" :y="ys(t) + 3" class="tick" text-anchor="end">{{ t }}×</text>
+        <text v-for="(y, i) in YEARS" :key="y" :x="xs(i)" :y="LY + LH + 16" class="tick" text-anchor="middle">{{ y }}</text>
+        <line :x1="LX" :x2="xs(4)" :y1="LY + LH" :y2="LY + LH" class="axis" />
+        <g v-for="(sr, i) in series" :key="sr.k" :class="['series', sr.k]">
+          <path :d="pathOf(sr.v)" pathLength="1" class="ln" :style="{ '--d': `${0.5 + i * 0.35}s` }" />
+          <circle :cx="xs(4)" :cy="ys(sr.v[4])" r="3.2" class="dot" :style="{ '--d': `${1.4 + i * 0.35}s` }" />
+          <text :x="xs(4) + 8" :y="ys(sr.v[4]) + 4" class="end" :style="{ '--d': `${1.4 + i * 0.35}s` }"><tspan class="end-v">{{ endLabel(sr.v) }}</tspan> {{ sr.t }}</text>
+        </g>
+      </svg>
+      <div class="note">Process nodes won't close the gap: TSMC's A14 (2028) is at most <span class="nk">15%</span> faster than N2 at the same power.</div>
     </div>
 
     <div class="punch">…and every new architectural feature makes the software harder: FlashAttention went from 35% to 75% of H100 peak only ~2 years after Hopper launched.</div>
@@ -89,25 +97,25 @@ const logw = (v: number) => (Math.log10(v) / 2) * 100 // 1x → 0%, 100x → 100
 .yr { position: absolute; bottom: -20px; font-family: var(--mono); font-size: 11px; color: var(--slidev-theme-ink-secondary); }
 
 /* right: log-scale horizontal bars */
-.gap { display: flex; flex-direction: column; gap: 6px; }
-.row { display: grid; grid-template-columns: 196px 1fr; align-items: center; gap: 12px; height: 32px; }
-.lab { display: flex; flex-direction: column; line-height: 1.2; }
-.lt { font-family: 'Archivo', sans-serif; font-weight: 600; font-size: 12.5px; color: var(--slidev-theme-ink); }
-.ls { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 11px; color: var(--slidev-theme-ink-secondary); }
-.track { position: relative; height: 22px; border-left: 1px solid var(--slidev-theme-ink); }
-.gbar { position: absolute; left: 0; top: 0; bottom: 0; width: 0; min-width: 0; border-radius: 0 5px 5px 0; transition: width 0.9s cubic-bezier(0.4, 0, 0.2, 1); transition-delay: var(--d); }
-.on .gbar { width: max(var(--w), 3px); }
-.need .gbar { background: linear-gradient(90deg, rgba(var(--slidev-theme-primary-rgb), 0.35), var(--slidev-theme-primary)); }
-.power .gbar, .node .gbar { background: linear-gradient(90deg, rgba(100, 116, 139, 0.25), #94a3b8); }
-.rest .gbar { background: repeating-linear-gradient(45deg, rgba(var(--slidev-theme-accent-rgb, 245, 158, 11), 0.55) 0 6px, rgba(245, 158, 11, 0.3) 6px 12px); border: 1.5px solid var(--slidev-theme-accent); }
-.rest .lt { color: #b45309; }
-.gv { position: absolute; top: 50%; transform: translateY(-50%); font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--slidev-theme-ink); white-space: nowrap; opacity: 0; transition: opacity 0.3s ease; transition-delay: var(--d); }
-.rest .gv { color: #b45309; }
-.on .gv { opacity: 1; }
-.ticks { position: relative; height: 14px; margin-left: 208px; }
-.ticks span { position: absolute; transform: translateX(-50%); font-family: var(--mono); font-size: 10px; color: var(--slidev-theme-ink-secondary); }
 
+.lines { width: 100%; height: auto; overflow: visible; }
+.grid { stroke: var(--slidev-theme-border); }
+.axis { stroke: var(--slidev-theme-ink); opacity: 0.5; }
+.tick { font-family: var(--mono); font-size: 9px; fill: var(--slidev-theme-ink-secondary); }
+.ln { fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.1s cubic-bezier(0.4, 0, 0.2, 1); transition-delay: var(--d); }
+.on .ln { stroke-dashoffset: 0; }
+.dot, .end { opacity: 0; transition: opacity 0.35s ease; transition-delay: var(--d); }
+.on .dot, .on .end { opacity: 1; }
+.end { font-family: 'Source Serif 4', serif; font-size: 11px; fill: var(--slidev-theme-ink-secondary); }
+.end-v { font-family: var(--mono); font-weight: 700; font-size: 12px; fill: var(--slidev-theme-ink); }
+.compute .ln { stroke: var(--slidev-theme-primary); } .compute .dot { fill: var(--slidev-theme-primary); }
+.power .ln { stroke: #94a3b8; } .power .dot { fill: #94a3b8; }
+.eff .ln { stroke: var(--slidev-theme-accent); stroke-width: 3; } .eff .dot { fill: var(--slidev-theme-accent); }
+.eff .end, .eff .end-v { fill: #b45309; }
+.note { margin-top: 6px; font-family: 'Source Serif 4', serif; font-size: 12.5px; line-height: 1.4; color: var(--slidev-theme-ink-secondary); opacity: 0; transition: opacity 0.5s ease 2s; }
+.on .note { opacity: 1; }
+.nk { font-family: var(--mono); font-weight: 700; color: var(--slidev-theme-ink); }
 .punch { grid-column: 1 / -1; margin-top: 18px; font-family: 'Instrument Serif', serif; font-style: italic; font-size: 19px; line-height: 1.25; color: var(--slidev-theme-ink); opacity: 0; transition: opacity 0.6s ease 2.2s; }
 .on .punch { opacity: 1; }
-.instant .bar, .instant .v, .instant .gbar, .instant .gv, .instant .punch { transition: none !important; }
+.instant .bar, .instant .v, .instant .ln, .instant .dot, .instant .end, .instant .note, .instant .punch { transition: none !important; }
 </style>
