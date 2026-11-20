@@ -10,12 +10,12 @@ import { useAutoplay } from '../utils/autoplay'
 
 const rows = [
   { group: 'Whole models' },
-  { name: 'GPT-OSS', v: 1.067, l: '1.07', note: 'transpose folded into TMA descriptor; GQA in-kernel' },
+  { name: 'GPT-OSS', v: 1.067, l: '1.07', note: 'transpose folded into TMA descriptor' },
   { name: 'Qwen-3.5 MoE', v: 1.075, l: '1.08', note: 'expert routing via TMA gather' },
   { name: 'Mamba-2', v: 1.0, l: '1.00', note: "Triton's schedule is already strong", par: true },
   { group: 'Standalone kernels' },
   { name: 'Cross-Entropy', v: 1.669, l: '1.67', note: 'less host-side launch overhead' },
-  { name: 'Llama-4 RoPE', v: 1.073, l: '1.07', note: 'bandwidth-bound: little headroom' },
+  { name: 'Llama-4 RoPE', v: 1.073, l: '1.07', note: 'one vector load per complex pair' },
   { name: 'Neighborhood Attn.', v: 24.85, l: '24.85', note: 'new algorithm: O(L²D) → O(LWD)', broken: true },
 ] as const
 
@@ -47,7 +47,9 @@ const gap1 = `${((AXIS + 2.6) / BROKEN) * 100}%`
             {{ r.l }}×
           </div>
         </div>
-        <div class="note">{{ r.note }}</div>
+        <div class="note">
+          <template v-for="(part, k) in r.note.split('→')" :key="k"><Arr v-if="k" />{{ part }}</template>
+        </div>
       </div>
     </template>
     <div class="row axis">

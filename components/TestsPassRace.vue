@@ -27,7 +27,7 @@ const props = withDefaults(defineProps<{ step?: number }>(), { step: 99 })
         <line x1="110" x2="556" y1="62" y2="62" class="mid" />
 
         <GlassRect :x="130" :y="18" :w="250" :h="34" :rx="7" tint="#6366f1" />
-        <text x="255" y="40" class="txt">copy tile 2 → buf 0</text>
+        <SvgArrowLabel :x="262" :y="40" left="copy tile 2" right="buf 0" />
 
         <GlassRect :x="330" :y="78" :w="200" :h="34" :rx="7" tint="#10b981" />
         <text x="430" y="100" class="txt">read buf 0</text>

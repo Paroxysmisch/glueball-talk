@@ -75,7 +75,7 @@ const at = (x: number, extra = 0) => ({ transitionDelay: on.value ? `${((x - X0)
     <!-- TMA copies -->
     <g v-for="t in tiles" :key="'c' + t.k" class="piece" :class="{ on }" :style="at(t.copyStart, 0.25)">
       <GlassRect :x="t.copyStart" :y="top(1)" :w="BW" :h="BH" :rx="8" :tint="t.buf ? '#06b6d4' : '#6366f1'" />
-      <text :x="t.copyStart + BW / 2" :y="top(1) + BH / 2 + 4" class="blk-text">copy {{ t.k }} → buf {{ t.buf }}</text>
+      <SvgArrowLabel :x="t.copyStart + BW / 2" :y="top(1) + BH / 2 + 4" :left="`copy ${t.k}`" :right="`buf ${t.buf}`" />
     </g>
 
     <!-- consumer MMAs -->

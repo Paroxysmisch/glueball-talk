@@ -10,7 +10,7 @@ import { useAutoplay } from '../utils/autoplay'
 const { on, instant } = useAutoplay()
 
 const W = 112, G = 22, Y = 110, H = 56
-const STEP = 0.75 // seconds between boxes
+const STEP = 0.36 // seconds between boxes
 const boxes = [
   { t: 'AST translation', tint: '#8b5cf6' },
   { t: 'Gluon kernel(s)', tint: '#f59e0b' },
@@ -21,9 +21,9 @@ const boxes = [
   { t: 'Benchmark', tint: '#64748b' },
 ].map((b, i) => ({ ...b, x: i * (W + G), at: i * STEP }))
 
-const REPEAT_AT = boxes.length * STEP + 0.2
-const RETRY_AT = REPEAT_AT + 1.4
-const DRAW = 1.0
+const REPEAT_AT = boxes.length * STEP + 0.1
+const RETRY_AT = REPEAT_AT + 0.8
+const DRAW = 0.6
 
 const cx = (i: number) => boxes[i].x + W / 2
 const delay = (s: number) => ({ transitionDelay: on.value ? `${s}s` : '0s' })
@@ -77,10 +77,10 @@ const head = (x: number, y: number, dir: 'up' | 'down') => {
 .tag-y { fill: #b45309; }
 .tag-r { fill: #e11d48; }
 
-.fade { opacity: 0; transform: translateY(8px); transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+.fade { opacity: 0; transform: translateY(8px); transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
 .fade.on { opacity: 1; transform: none; }
 
-.draw { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1); }
+.draw { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
 .draw.on { stroke-dashoffset: 0; }
 
 .head { opacity: 0; transition: opacity 0.25s ease; }

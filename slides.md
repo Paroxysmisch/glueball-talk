@@ -150,7 +150,7 @@ I'll show each in turn, after the overall loop.
 <GlueballLoop class="mt-4" />
 
 <!--
-[the loop builds itself box by box when the slide appears; ~9 s]
+[the loop builds itself box by box when the slide appears; ~4 s]
 
 We start from an existing Triton model and translate each kernel mechanically into Gluon.
 
@@ -208,9 +208,9 @@ This pipeline waits for one copy too few. So the read of buffer 0 can start whil
 
 We asked two questions. First: does verification help agents find bugs? Yes.
 
-Across four different LLMs, Glueball detected two to three more of the 24 injected bugs, with zero false alarms.
+Across four different LLMs, Glueball detected two to three more of the 24 injected bugs, with zero false positives.
 
-On a harder suite of synchronisation bugs, it cut false alarms, from seven to two for the strongest model.
+On a harder suite of synchronisation bugs, it cut false positives, from seven to two for the strongest model.
 -->
 
 ---
@@ -224,7 +224,7 @@ clicks: 1
 <!--
 We also switched the two tools on and off. With both tools, the agent needs about 40% fewer tokens to find the bugs: 0.93 million instead of 1.52 million.
 
-[click] And without either tool, the raw model raises seven false alarms on 21 bug-free kernels. With either tool, that drops to zero.
+[click] And without either tool, the raw model raises seven false positives on 21 bug-free kernels. With either tool, that drops to zero.
 -->
 
 ---

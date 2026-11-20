@@ -2,7 +2,7 @@
 /**
  * Slide 9 — correctness-suite results (paper Fig. 4) as two grouped bar charts:
  *  · bugs found on the generic suite (of 24)  — higher is better
- *  · false alarms on the synchronisation suite (of 12) — lower is better
+ *  · false positives on the synchronisation suite (of 12) — lower is better
  * Each model: the LLM alone vs the same LLM with Glueball. Bars grow in when the slide appears.
  */
 import { useAutoplay } from '../utils/autoplay'
@@ -12,7 +12,7 @@ const { on, instant } = useAutoplay(300)
 const models = ['DeepSeek V4 Pro', 'DeepSeek V4 Flash', 'Meta Muse Spark 1.3', 'GPT 5.6 Sol']
 const charts = [
   { title: 'Bugs found', sub: 'generic suite · of 24', dir: 'higher is better', max: 24, ticks: [0, 6, 12, 18, 24], base: [21, 22, 22, 21], gb: [24, 24, 24, 23] },
-  { title: 'False alarms', sub: 'synchronisation suite · of 12', dir: 'lower is better', max: 8, ticks: [0, 2, 4, 6, 8], base: [7, 1, 3, 1], gb: [2, 0, 0, 0] },
+  { title: 'False positives', sub: 'synchronisation suite · of 12', dir: 'lower is better', max: 8, ticks: [0, 2, 4, 6, 8], base: [7, 1, 3, 1], gb: [2, 0, 0, 0] },
 ]
 const delta = (a: number, b: number) => (b - a > 0 ? `+${b - a}` : b - a < 0 ? `−${a - b}` : '±0')
 </script>
