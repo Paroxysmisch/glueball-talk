@@ -189,3 +189,6 @@ html .aurora-bottom-bar .bar-section { font-size: 11px; }
 html .aurora-bottom-bar .bar-author { font-size: 12px; }
 html .footnote-item { font-size: 12px; }
 html .cover-author { margin-top: 22px !important; font-size: 18px !important; }
+
+/* source line on data slides */
+html .slidev-layout p.sources { position: absolute; left: var(--slidev-theme-pad-edge); right: var(--slidev-theme-pad-edge); bottom: 38px; margin: 0; font-size: 10.5px; line-height: 1.4; opacity: 0.7; }
