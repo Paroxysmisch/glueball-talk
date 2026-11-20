@@ -260,7 +260,7 @@ clicks: 4
 
 <div v-click="3">
 
-- collectives in the wrong order
+- mismatched or skipped collectives
 - deadlocks across devices
 - communication / compute races
 
@@ -281,9 +281,9 @@ The first direction is scale.
 
 [click] Real training and inference run across many GPUs, and increasingly across different accelerators.
 
-[click] That adds new ways to fail:
+[click] Take a Mixture-of-Experts layer: every GPU sends its tokens to the experts on other GPUs, and gets results back, through two all-to-all collectives.
 
-[click] collectives in the wrong order, deadlocks across devices, races between communication and compute.
+[click] Now suppose, for one batch, GPU 2's router sends it no tokens, and its kernel takes an early exit and skips the all-to-all. The other three GPUs wait for it forever. It only happens for some inputs, so tests rarely hit it. That's the kind of failure we get at scale: collectives that don't match up, deadlocks across devices, races between communication and compute.
 
 [click] These are exactly the bugs that tests catch least and proofs catch best.
 -->
