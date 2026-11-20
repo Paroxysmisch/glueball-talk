@@ -299,25 +299,28 @@ clicks: 3
 
 <p><strong>Lesson from Mamba-2:</strong> agents tried many <em>valid</em> pipeline schedules, but the extra buffering usually cost more than it saved.</p>
 
-<p v-click="1">Apply <strong>resource</strong> and <strong>safety</strong> constraints <em>before</em> generating any code…</p>
+<p v-click="1">Search schedules with <strong>Bayesian optimisation</strong>: the LLM supplies the <strong>prior</strong>, real runs on the GPU supply the data…</p>
 
-<p v-click="3">…then rank what's left using earlier rounds. Fewer expensive LLM iterations.</p>
+<p v-click="2">…and the LLM acts as the <strong>acquisition function</strong>, choosing what to run next. Fewer expensive LLM iterations and GPU runs.</p>
 
 </div>
 <div>
 
-<ScheduleGrid :step="$clicks" />
+<BoSearch :step="$clicks" />
 
 </div>
 </div>
 
 <!--
-The second direction comes from Mamba-2. There, agents tried many valid pipeline schedules, but the extra buffering usually cost more than it saved.
+The second direction comes from Mamba-2. There, agents tried many valid pipeline schedules, but the extra buffering usually cost more than it saved. Blind trial and error is expensive.
 
-[click] We can apply resource
-[click] and safety constraints before generating any code.
+Instead, we can treat this as Bayesian optimisation. The LLM's knowledge gives a prior over which execution schedules should be fast, the dashed line, and schedules that fail safety or resource checks are ruled out before anything runs.
 
-[click] Combined with what we learned from earlier rounds, that prunes the search space and saves expensive LLM iterations.
+[click] Real runs on the GPU give measurements, and the model updates.
+
+[click] The LLM then acts as the acquisition function: it picks the most promising schedule to try next.
+
+[click] We run it, and the model homes in on the best schedule with far fewer expensive iterations.
 -->
 
 ---
