@@ -26,8 +26,8 @@ const models = [
 const MAXM = 140
 
 const gap = [
-  { k: 'need', t: 'Training compute needed / year', s: '2025 → 2030', v: 100, l: '~100×' },
-  { k: 'power', t: 'Data-centre electricity', s: 'IEA, 2024 → 2030', v: 2.3, l: '~2.3×' },
+  { k: 'need', t: 'Training compute needed / year', s: '2025 to 2030', v: 100, l: '~100×' },
+  { k: 'power', t: 'Data-centre electricity', s: 'IEA, 2024 to 2030', v: 2.3, l: '~2.3×' },
   { k: 'node', t: 'Process node, same power', s: 'TSMC A14 vs N2', v: 1.15, l: '≤1.15×' },
   { k: 'rest', t: 'Left for architecture & software', s: '100 ÷ (2.3 × 1.15)', v: 38, l: '~40×' },
 ]
