@@ -2,7 +2,7 @@
 /**
  * PhD slide — from the first-year report ("Automating Machine Learning Systems Development"):
  * three directions along the software → hardware spectrum, towards automated co-design.
- * step 0: kernels (Glueball + next) · 1: compilers + hardware · 2: timeline
+ * step 0: kernels (Glueball + next) · 1: compilers + hardware
  */
 const props = withDefaults(defineProps<{ step?: number }>(), { step: 99 })
 const on = (n: number) => props.step >= n
@@ -24,19 +24,21 @@ const dirs = [
     at: 1,
   },
 ]
-const timeline = [
-  { when: 'Michaelmas 2026', what: 'Glueball reviews · start inequivalence checking' },
-  { when: 'Lent 2027', what: 'Inequivalence checking paper' },
-  { when: 'Easter–Mich. 2027', what: 'Agent-built compilers → ICLR 2028' },
-  { when: '2028', what: 'Performance modelling → MLSys 2029 · write-up' },
-]
 </script>
 
 <template>
   <div class="ps">
     <div class="axis">
       <span>Software</span>
-      <div class="axis-line" />
+      <svg class="axis-arrow" viewBox="0 0 400 12" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="ps-axis" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="400" y2="0">
+            <stop offset="0%" stop-color="var(--slidev-theme-primary)" />
+            <stop offset="100%" stop-color="var(--slidev-theme-secondary)" />
+          </linearGradient>
+        </defs>
+        <line x1="2" y1="6" x2="398" y2="6" stroke="url(#ps-axis)" />
+      </svg>
       <span>Hardware</span>
     </div>
 
@@ -52,23 +54,18 @@ const timeline = [
       </div>
     </div>
 
-    <div class="goal fade" :class="{ on: on(1) }">Goal: automated, end-to-end software–hardware co-design</div>
-
-    <div class="tl fade" :class="{ on: on(2) }">
-      <div v-for="(s, i) in timeline" :key="i" class="tl-item">
-        <div class="dot" />
-        <div class="when">{{ s.when }}</div>
-        <div class="what">{{ s.what }}</div>
-      </div>
-    </div>
   </div>
 </template>
 
 <style scoped>
 .ps { display: flex; flex-direction: column; gap: 12px; }
+.axis-arrow { flex: 1; height: 12px; overflow: visible; }
+.axis-arrow line { stroke-width: 2; opacity: 0.6; }
+/* double-headed: one head pointing at each end */
+.axis > span:first-child::after, .axis > span:last-child::before { content: ''; display: inline-block; vertical-align: middle; border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+.axis > span:first-child::after { margin-left: 8px; margin-right: -13px; border-right: 8px solid var(--slidev-theme-primary); opacity: 0.8; }
+.axis > span:last-child::before { margin-left: -13px; margin-right: 8px; border-left: 8px solid var(--slidev-theme-secondary); opacity: 0.8; }
 .axis { display: flex; align-items: center; gap: 12px; font-family: 'Archivo', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--slidev-theme-ink-secondary); }
-.axis-line { flex: 1; height: 2px; background: linear-gradient(90deg, var(--slidev-theme-primary), var(--slidev-theme-secondary)); opacity: 0.5; position: relative; }
-.axis-line::after { content: ''; position: absolute; right: -2px; top: -4px; border-left: 8px solid var(--slidev-theme-secondary); border-top: 5px solid transparent; border-bottom: 5px solid transparent; opacity: 0.8; }
 
 .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .card { padding: 12px 14px !important; display: flex; flex-direction: column; gap: 6px; }
@@ -80,13 +77,7 @@ const timeline = [
 .tag { font-family: var(--mono); font-size: 9.5px; font-weight: 700; padding: 1px 6px; border-radius: 4px; background: rgba(var(--slidev-theme-primary-rgb), 0.12); }
 .next { font-family: 'Source Serif 4', serif; font-size: 12.5px; line-height: 1.4; color: var(--slidev-theme-ink-secondary); }
 
-.goal { text-align: center; font-family: 'Instrument Serif', serif; font-style: italic; font-size: 20px; color: var(--slidev-theme-ink); }
 
-.tl { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; padding-top: 10px; border-top: 1px solid var(--slidev-theme-border); }
-.tl-item { display: flex; flex-direction: column; gap: 2px; position: relative; padding-left: 14px; }
-.dot { position: absolute; left: 0; top: 4px; width: 7px; height: 7px; border-radius: 50%; background: var(--slidev-theme-secondary); }
-.when { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--slidev-theme-ink); }
-.what { font-family: 'Source Serif 4', serif; font-size: 12.5px; line-height: 1.35; color: var(--slidev-theme-ink-secondary); }
 
 .fade { opacity: 0; transform: translateY(8px); transition: all 0.5s ease; }
 .fade.on { opacity: 1; transform: none; }

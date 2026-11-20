@@ -324,40 +324,7 @@ Instead, we can treat this as Bayesian optimisation. The LLM's knowledge gives a
 -->
 
 ---
-clicks: 3
----
-
-# Direction 3 · Verify the whole stack
-
-<div class="grid grid-cols-[250px_1fr] gap-10 mt-4 items-center">
-<div class="points">
-
-<p>Today we verify at the <strong>Gluon</strong> level.</p>
-
-<p v-click="1">But bugs can be introduced at <strong>every step</strong> of compilation.</p>
-
-<p v-click="2">With a formal model of PTX and other tools, verify at several levels…</p>
-
-<p v-click="3" class="punch">…guarantees much closer to what actually runs on the hardware.</p>
-
-</div>
-
-<StackDescent :step="$clicks" />
-
-</div>
-
-<!--
-The third direction goes down. Today we verify at the Gluon level.
-
-[click] But bugs can be introduced at every step of compilation.
-
-[click] With a formal model of PTX and other tools, we could verify at several levels
-
-[click] and get guarantees much closer to what actually runs on the hardware.
--->
-
----
-clicks: 2
+clicks: 1
 ---
 
 # Automating ML systems development
@@ -372,8 +339,6 @@ Glueball is the first step of my PhD, which is about automating machine-learning
 On the kernel side, the next step is inequivalence checking: adversarial agents search for inputs where an optimised kernel and its reference disagree, and only mismatches reproduced on real hardware are trusted.
 
 [click] Further down the stack, agents that build compilers for new accelerators, and learned models that predict a hardware design's speed, power and area, all working towards automated software–hardware co-design.
-
-[click] This year: the inequivalence-checking paper. Then agent-built compilers, aiming for ICLR 2028, and performance modelling, aiming for MLSys 2029.
 -->
 
 ---
