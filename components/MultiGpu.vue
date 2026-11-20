@@ -2,12 +2,27 @@
 /**
  * Slide 12 — a Mixture-of-Experts layer on 4 GPUs, and an input-dependent distributed deadlock.
  * Each GPU: attention → all-to-all dispatch (tokens to their experts) → experts → all-to-all combine → next layer.
- * step 0: one GPU · 1: split into 4 GPUs · 2: the all-to-alls link every pair of GPUs
+ * Plays by itself when the slide appears (no clicks):
+ * 0: one GPU · 1: split into 4 GPUs · 2: the all-to-alls link every pair of GPUs
  * 3: GPU 2's router sends it no tokens, so its kernel early-exits and skips the all-to-all;
  *    the other three block in the collective forever. Only some inputs trigger it.
  */
-const props = withDefaults(defineProps<{ step?: number }>(), { step: 99 })
-const on = (n: number) => props.step >= n
+import { onBeforeUnmount, ref, watch } from 'vue'
+import { useAutoplay } from '../utils/autoplay'
+
+const { on: playing, instant } = useAutoplay(200)
+const step = ref(0)
+const AT = [0, 0.7, 1.7, 3.0] // seconds after the slide appears at which each stage starts
+let timers: ReturnType<typeof setTimeout>[] = []
+const clear = () => { timers.forEach(clearTimeout); timers = [] }
+watch([playing, instant], ([p, inst]) => {
+  clear()
+  if (inst) { step.value = 3; return }
+  step.value = 0
+  if (p) AT.forEach((t, k) => timers.push(setTimeout(() => (step.value = k), t * 1000)))
+}, { immediate: true })
+onBeforeUnmount(clear)
+const on = (n: number) => step.value >= n
 
 const devices = ['GPU 0', 'GPU 1', 'GPU 2', 'GPU 3']
 const BAD = 2 // the GPU that receives no tokens

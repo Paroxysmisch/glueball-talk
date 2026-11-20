@@ -246,8 +246,6 @@ Mamba-2 only matched Triton: Triton's schedule there is already very good.
 -->
 
 ---
-clicks: 4
----
 
 # Direction 1 · Extension to distributed kernels
 
@@ -256,7 +254,7 @@ clicks: 4
 
 <p>Real training and inference run across many GPUs, and increasingly across <strong>heterogeneous accelerators</strong>.</p>
 
-<div v-click="3">
+<div v-motion :initial="{ opacity: 0, y: 10 }" :enter="{ opacity: 1, y: 0, transition: { delay: 3200, duration: 500 } }">
 
 - mismatched or skipped collectives
 - deadlocks across devices
@@ -266,22 +264,22 @@ clicks: 4
 
 </div>
 
-<MultiGpu :step="$clicks" />
+<MultiGpu />
 
 </div>
 
 <!--
 [5:00 · Part 4 — Future work and impact]
 
-The first direction is scale.
+[everything plays automatically when the slide appears, ~3.5 s]
 
-[click] Real training and inference run across many GPUs, and increasingly across different accelerators.
+The first direction is scale. Real training and inference run across many GPUs, and increasingly across different accelerators.
 
-[click] Take a Mixture-of-Experts layer: every GPU sends its tokens to the experts on other GPUs, and gets results back, through two all-to-all collectives.
+Take a Mixture-of-Experts layer: every GPU sends its tokens to the experts on other GPUs, and gets results back, through two all-to-all collectives.
 
-[click] Now suppose, for one batch, GPU 2's router sends it no tokens, and its kernel takes an early exit and skips the all-to-all. The other three GPUs wait for it forever. It only happens for some inputs, so tests rarely hit it. That's the kind of failure we get at scale: collectives that don't match up, deadlocks across devices, races between communication and compute.
+Now suppose, for one batch, GPU 2's router sends it no tokens, and its kernel takes an early exit and skips the all-to-all. The other three GPUs wait for it forever. It only happens for some inputs, so tests rarely hit it. That's the kind of failure we get at scale: collectives that don't match up, deadlocks across devices, races between communication and compute.
 
-[click] These are exactly the bugs that tests catch least and proofs catch best.
+These are exactly the bugs that tests catch least and proofs catch best.
 -->
 
 ---
