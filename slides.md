@@ -188,13 +188,13 @@ clicks: 3
 <!--
 For hardware behaviour, we built a Gluon-to-Z3 library. Here's a real example.
 
-This pipeline waits for one copy too few. So the read of buffer 0 can start while copy 0 is still writing it. Whether that actually breaks depends on timing, so tests can easily miss it.
+Two copies are in flight, into buffers 0 and 1. Before reading buffer 0, the consumer waits, but this wait only blocks while more than two copies are in flight. That's already true, so it returns at once, and the read of buffer 0 overlaps copy 0. Whether that actually breaks depends on timing, so tests can easily miss it.
 
-[click] The agent describes this to Z3 as events with rules about what must happen before what. The read is ordered after the wait, but nothing orders the wait after copy 0 finishes. The agent asks Z3: can the read come before copy 0 finishes?
+[click] The agent describes the same events to Z3, with the rules about what must happen before what. The read comes after the wait, but nothing orders the wait after either copy is done. The agent asks Z3: can the read come before copy 0 is done?
 
 [click] Z3 says yes, and gives a concrete ordering. The agent replays it on the real GPU to confirm the race.
 
-[click] With the fix, Z3 finds no such ordering. That is a proof there is no race.
+[click] With the fix, waiting until at most one copy is in flight, Z3 finds no such ordering. That is a proof there is no race.
 -->
 
 ---
@@ -357,7 +357,7 @@ The third direction goes down. Today we verify at the Gluon level.
 clicks: 2
 ---
 
-# The PhD · Automating ML systems development
+# Automating ML systems development
 
 <PhdSpectrum :step="$clicks" />
 
