@@ -231,7 +231,7 @@ We also switched the two tools on and off. With both tools, the agent needs abou
 
 # And the code is still fast
 
-<p class="lede">Median end-to-end speed-up over Triton on held-out input shapes (best of four agents).</p>
+<p class="lede">Median end-to-end speed-up over human-expert Triton baseline.</p>
 
 <SpeedupBars class="mt-2" />
 
@@ -260,13 +260,11 @@ clicks: 4
 
 <div v-click="3">
 
-- mismatched or skipped collectives
+- mismatched / skipped collectives
 - deadlocks across devices
 - communication / compute races
 
 </div>
-
-<p v-click="4" class="punch">The bugs tests catch least, and proofs catch best.</p>
 
 </div>
 
