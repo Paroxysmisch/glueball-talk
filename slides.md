@@ -58,6 +58,32 @@ Assumes AI compute keeps growing ~2.25× a year while data-centre power only ~do
 
 ---
 
+# Software takes years to catch up
+
+<p class="lede">Time from each GPU's launch until FlashAttention reaches ~70% of its theoretical peak.</p>
+
+<FaTimeline class="mt-2" />
+
+<p class="sources">Sources: NVIDIA launch announcements (A100, H100, B200) · Dao et al., <em>FlashAttention</em> (2022) and <em>FlashAttention-2</em> (2023) · Shah et al., <em>FlashAttention-3</em> (2024) · Zadouri et al., <em>FlashAttention-4</em> (2026). Utilisation as reported by each paper.</p>
+
+<!--
+[the timeline animates in when the slide appears]
+
+Here's what that looks like in practice, for one of the most important kernels in AI: attention.
+
+Ampere's A100 launched in May 2020. The first FlashAttention, two years later, got 25 to 40% of its peak. It took FlashAttention-2, in mid-2023, to reach over 70%: more than three years after launch.
+
+By then Hopper was out. FlashAttention-2 only reached 35% of the H100's peak, because Hopper's new asynchronous features, the TMA, warp specialisation, needed a redesign. FlashAttention-3 got to 75% in July 2024, more than two years after Hopper launched.
+
+And again: by then Blackwell was announced. FlashAttention-4, built for Blackwell, was previewed in August 2025 and published in March 2026, at 71%.
+
+So each time, it takes a world-class team about two to three years to fully use the hardware, and by then the next generation has arrived. Every kernel in every model has this problem.
+
+(Data: A100 announced 14 May 2020; H100 22 Mar 2022; B200 18 Mar 2024. FA1 arXiv 27 May 2022: 25–40% of A100 max FLOPs/s. FA2 arXiv 17 Jul 2023: 50–73% on A100 (per the FA2 paper); 35% on H100 (per the FA3 announcement). FA3 arXiv 11 Jul 2024: 75% on H100 (740 TFLOPs/s FP16). FA4 arXiv 5 Mar 2026 (preliminary results at Hot Chips, Aug 2025): up to 1605 TFLOPs/s BF16 on B200, 71% utilisation. FA4's GitHub releases are still tagged beta as of Nov 2026.)
+-->
+
+---
+
 # ML Accelerators are becoming complex
 
 <p class="lede">Modern Hopper and Blackwell GPUs rely on <em>overlapping</em> work to maximise hardware utilization.</p>
