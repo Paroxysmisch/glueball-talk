@@ -27,31 +27,32 @@ layout: cover
 Agentic generation and verification of hardware-optimised Gluon kernels
 
 <!--
-[0:00 · Part 1 — Motivation]
+Hi, I'm Yash.
 
-Hi, I'm Yash. This talk is about Glueball: getting AI agents to write fast GPU code, and to prove that code is correct.
+PhD student working on automating systems development to optimise training and inference for machine learning workloads
+
+Presenting my work Glueball
 -->
 
 ---
 
-# Compute need demands new architectures
+# Compute need demands new architect
 
 <ComputeGap />
 
 <p class="sources">Sources: Epoch AI, <em>How many AI models will exceed compute thresholds?</em> (2025) · AI 2027, <em>Compute Forecast</em> (2025) · IEA, <em>Energy and AI</em> (2025) · TSMC Technology Symposium roadmaps (2025, 2026).</p>
 
 <!--
-[the charts animate in when the slide appears]
+Model capability has largely been driven by scaling laws
+Whilst today there are essentially no models trained with more than 10^27 FLOPs. By 2030, we expect over a 100. This requires vastly more compute.
 
-Training compute is what has driven AI progress, and it keeps growing. Epoch AI's projections: today there are essentially no models trained with more than 10^27 FLOP. By 2030, in their median scenario, there will be over a hundred.
+But, we can't just keep adding power to pay for that. Even if data-centre power roughly doubles by 2030, performance per watt has to improve by around 50-fold.
 
-We can't just keep adding power to pay for that. If AI compute keeps growing at its current ~2.25× a year, and data-centre power only roughly doubles by 2030, performance per watt has to improve by around 50-fold.
+Where does that come from? Process node developments only give us a 2x improvement.
 
-Where does that come from? Process nodes give us the bottom band: TSMC's roadmap, N2, then A16, A14, and A12 in 2029, adds up to a bit over 2× in efficiency. TSMC themselves say about 30% every two years. That's only about a fifth of what we need, in orders of magnitude.
+The remaining 25×, has to come from architecture: things like specialised arithmetic units, lower precision, asynchronous data movement.
 
-Everything else, roughly 25×, has to come from architecture and software: specialised units, lower precision, asynchronous data movement, and software that actually uses them. And that software is getting harder to write.
-
-Assumes AI compute keeps growing ~2.25× a year while data-centre power only ~doubles by 2030. Node gains use TSMC's published power savings at the same speed.
+However, more complex hardware, means that the software we have to write to get the most out of the hardware also becomes more complicated.
 
 (Assumptions/data: needed perf/W = 2.25^(t-2024) / 2.3^((t-2024)/6): 2.25×/yr is AI 2027's global AI-compute growth (extended past 2027); 2.3× is the IEA's data-centre electricity growth 2024→2030. Node: TSMC power reduction at the same speed, taking the best node available each year vs N3E: N2 2025 (−25–30% → ×1.38), A16 2027 (−15–20% vs N2P → ×1.67 cumulative), A14 2028 (−25–30% vs N2 → ×1.90), A12 2029 (not disclosed; assumed like A14 vs N2 → ×2.3); nothing announced for 2030. Cross-check: TSMC's Kevin Zhang, Apr 2026: "Every two years, we drive 30% efficiency" → 1.3^3 ≈ 2.2 by 2030. Needed ≈ ×56; architecture & software ≈ 56 / 2.3 ≈ ×25. Epoch >10^27 counts decoded from their cumulative chart: 0 / 6 / 25 / 64 / 124 by the start of 2026–2030.)
 -->
@@ -67,19 +68,9 @@ Assumes AI compute keeps growing ~2.25× a year while data-centre power only ~do
 <p class="sources">Sources: NVIDIA launch announcements (A100, H100, B200) · Dao et al., <em>FlashAttention</em> (2022) and <em>FlashAttention-2</em> (2023) · Shah et al., <em>FlashAttention-3</em> (2024) · Zadouri et al., <em>FlashAttention-4</em> (2026). Utilisation as reported by each paper.</p>
 
 <!--
-[the timeline animates in when the slide appears]
-
 Here's what that looks like in practice, for one of the most important kernels in AI: attention.
 
-Ampere's A100 launched in May 2020. The first FlashAttention, two years later, got 25 to 40% of its peak. It took FlashAttention-2, in mid-2023, to reach over 70%: more than three years after launch.
-
-By then Hopper was out. FlashAttention-2 only reached 35% of the H100's peak, because Hopper's new asynchronous features, the TMA, warp specialisation, needed a redesign. FlashAttention-3 got to 75% in July 2024, more than two years after Hopper launched.
-
-And again: by then Blackwell was announced. FlashAttention-4, built for Blackwell, was previewed in August 2025 and published in March 2026, at 71%.
-
-So each time, it takes a world-class team about two to three years to fully use the hardware, and by then the next generation has arrived. Every kernel in every model has this problem.
-
-(Data: A100 announced 14 May 2020; H100 22 Mar 2022; B200 18 Mar 2024. FA1 arXiv 27 May 2022: 25–40% of A100 max FLOPs/s. FA2 arXiv 17 Jul 2023: 50–73% on A100 (per the FA2 paper); 35% on H100 (per the FA3 announcement). FA3 arXiv 11 Jul 2024: 75% on H100 (740 TFLOPs/s FP16). FA4 arXiv 5 Mar 2026 (preliminary results at Hot Chips, Aug 2025): up to 1605 TFLOPs/s BF16 on B200, 71% utilisation. FA4's GitHub releases are still tagged beta as of Nov 2026.)
+With every Nvidia hardware launch it takes a team of human experts about two to three years to fully use the hardware, and often by then the next generation has arrived.
 -->
 
 ---
@@ -91,11 +82,9 @@ So each time, it takes a world-class team about two to three years to fully use 
 <AsyncTimeline class="mt-6" />
 
 <!--
-Modern GPUs like Hopper and Blackwell don't just run more threads. They overlap work.
+To give a concrete example of complexity, modern GPUs like Hopper and Blackwell don't just run more threads. They overlap work.
 
-[plays automatically when the slide appears] A dedicated copy engine, the TMA, moves data in the background. Groups of threads specialise: some fetch data, others compute. Barriers coordinate them: the dotted lines are the data dependencies.
-
-That is where the speed comes from now. It is also where the difficulty comes from. A fast kernel is a choreography of copies, computation and synchronisation across several pipeline stages. The right choreography differs for every kernel.
+However maximising this overlap requires rethinking algorithmic implementation to revolve around a particular hardware implementation.
 -->
 
 ---
@@ -125,13 +114,7 @@ That is where the speed comes from now. It is also where the difficulty comes fr
 </div>
 
 <!--
-Fixed compiler rules struggle to keep up with hardware that changes every generation. LLM agents are a promising alternative.
-
-[the bullets appear one after another when the slide comes in]
-
-They can understand novel hardware, adapt expert patterns to each kernel, try different designs, and refine them using profiler feedback.
-
-Benchmarks like KernelBench and TritonBench have made this an active research area.
+Whilst traditional compilers are really struggling to keep-up, with humans not being fast enough and hard to scale to optimise 100s or 1000s of kernels, fortunately agents offer some hope.
 -->
 
 ---
@@ -236,13 +219,15 @@ clicks: 3
 <VerifyFigure :step="$clicks" />
 
 <!--
-For hardware behaviour, we built a Gluon-to-Z3 library. Here's a real example: a two-buffer pipeline. It starts copying tile 0 into buffer 0; then, in the loop, it prefetches the next tile into buffer 1, waits, and reads buffer 0.
+The idea is that the agent can map code into a hardware model via our Gluon-to-Z3 library. It can then use this hardware event model to prove properties.
 
-[click] The agent turns each of these operations into an event for Z3, with the rules about what must happen before what. The read comes after the wait. But this wait only blocks while more than two copies are in flight, so nothing orders it after either copy finishing. The agent asks Z3: can the read come before copy 0 is done?
+E.g. in this case is there a race between the copy into buffer 0 and the reading of buffer 0.
 
-[click] Z3 says yes, and gives a concrete ordering. Play it: both copies start, the wait returns straight away, the read of buffer 0 happens while copy 0 is still writing it, and only then does copy 0 finish. The agent replays this on the real GPU to confirm the race. Whether it actually breaks depends on timing, so tests can easily miss it.
+A theorem prover then tries to satisfy this predicate.
 
-[click] The fix is one character: wait until at most one copy is in flight. Now copy 0 must finish before the wait returns, and Z3 finds no such ordering. That is a proof there is no race.
+Here, the code is buggy, and the prover finds an schedule of events that satisfies this.
+
+Fixing the kernel makes it unsatisfiable.
 -->
 
 ---
