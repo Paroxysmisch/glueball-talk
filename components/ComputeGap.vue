@@ -72,7 +72,7 @@ const BW = 24
             <stop offset="100%" stop-color="var(--slidev-theme-primary)" />
           </linearGradient>
         </defs>
-        <line v-for="v in [0, 50, 100]" :key="'g' + v" :x1="PX" :x2="PR" :y1="cy(v)" :y2="cy(v)" class="grid" />
+        <line v-for="v in [0, 50, 100]" :key="'g' + v" :x1="PX" :x2="PR" :y1="cy(v)" :y2="cy(v)" class="gridline" />
         <text v-for="v in [0, 50, 100]" :key="'t' + v" :x="PX - 6" :y="cy(v) + 3" class="tick" text-anchor="end">{{ v }}</text>
         <text v-for="y in [2024, 2026, 2028, 2030]" :key="y" :x="sx(y)" :y="PB + 15" class="tick" text-anchor="middle">{{ y }}</text>
         <g v-for="(m, i) in models" :key="m.y">
@@ -102,7 +102,7 @@ const BW = 24
           </linearGradient>
         </defs>
         <!-- grid + axes -->
-        <line v-for="v in [1, 10, 100]" :key="'g' + v" :x1="PX" :x2="PR" :y1="sy(v)" :y2="sy(v)" class="grid" />
+        <line v-for="v in [1, 10, 100]" :key="'g' + v" :x1="PX" :x2="PR" :y1="sy(v)" :y2="sy(v)" class="gridline" />
         <text v-for="v in [1, 10, 100]" :key="'t' + v" :x="PX - 6" :y="sy(v) + 3" class="tick" text-anchor="end">{{ v }}×</text>
         <text v-for="y in [2024, 2026, 2028, 2030]" :key="y" :x="sx(y)" :y="PB + 15" class="tick" text-anchor="middle">{{ y }}</text>
         <!-- stacked areas, revealed left to right -->
@@ -141,7 +141,7 @@ const BW = 24
 /* right: log-scale horizontal bars */
 
 .area { width: 100%; height: auto; overflow: visible; }
-.grid { stroke: var(--slidev-theme-border); }
+.gridline { stroke: var(--slidev-theme-border); }
 .axis { stroke: var(--slidev-theme-ink); opacity: 0.5; }
 .tick { font-family: var(--mono); font-size: 9px; fill: var(--slidev-theme-ink-secondary); }
 .reveal { transform: scaleX(0); transform-origin: left; transform-box: fill-box; transition: transform 1.8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s; }

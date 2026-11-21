@@ -37,7 +37,7 @@ const delta = (a: number, b: number) => (b - a > 0 ? `+${b - a}` : b - a < 0 ? `
             <span v-for="t in c.ticks" :key="t" :style="{ bottom: `${(t / c.max) * 100}%` }">{{ t }}</span>
           </div>
           <div class="area">
-            <div v-for="t in c.ticks" :key="'g' + t" class="grid" :style="{ bottom: `${(t / c.max) * 100}%` }" />
+            <div v-for="t in c.ticks" :key="'g' + t" class="gridline" :style="{ bottom: `${(t / c.max) * 100}%` }" />
             <div v-for="(m, i) in models" :key="m" class="group">
               <div class="pair">
                 <div class="bar base" :style="{ '--h': `${(c.base[i] / c.max) * 100}%`, '--d': `${ci * 0.3 + i * 0.08}s` }">
@@ -77,7 +77,7 @@ const delta = (a: number, b: number) => (b - a > 0 ? `+${b - a}` : b - a < 0 ? `
 .yaxis { position: relative; }
 .yaxis span { position: absolute; right: 6px; transform: translateY(50%); font-family: var(--mono); font-size: 10px; color: var(--slidev-theme-ink-secondary); }
 .area { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--slidev-theme-ink); }
-.grid { position: absolute; left: 0; right: 0; border-top: 1px solid var(--slidev-theme-border-soft); }
+.gridline { position: absolute; left: 0; right: 0; border-top: 1px solid var(--slidev-theme-border-soft); }
 .group { position: relative; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; }
 .pair { display: flex; align-items: flex-end; gap: 5px; height: 100%; }
 .bar { position: relative; width: 26px; height: 0; border-radius: 5px 5px 0 0; transition: height 0.9s cubic-bezier(0.4, 0, 0.2, 1); transition-delay: var(--d); }

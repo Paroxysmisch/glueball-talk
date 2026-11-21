@@ -59,7 +59,7 @@ const TX = [96, 230, 364, 498]
             v-for="(l, k) in code" :key="k" class="cl"
             :class="[l.e, { lit: on(1) && l.e, flash: flashing(l.e) }]" :style="l.e ? d(l.i) : {}"
           >
-            <span class="src">{{ l.t }}<template v-if="l.wait"><span class="arg" :class="{ fixed }">{{ fixed ? '1' : '2' }}</span>)</template></span>
+            <span class="src">{{ l.t }}<template v-if="l.wait"><span class="arg" :class="{ 'is-fixed': fixed }">{{ fixed ? '1' : '2' }}</span>)</template></span>
             <span v-if="l.wait" class="cm">{{ fixed ? '# ≤ 1 copy in flight' : '# ≤ 2 copies in flight' }}</span>
             <span v-else-if="l.c" class="cm">{{ l.c }}</span>
           </div>
@@ -157,7 +157,7 @@ const TX = [96, 230, 364, 498]
 .r.lit { background: rgba(16, 185, 129, 0.16); }
 .cl.flash { box-shadow: 0 0 0 1.5px var(--slidev-theme-accent); }
 .arg { border-radius: 3px; transition: background 0.4s ease, color 0.4s ease; }
-.arg.fixed { background: rgba(16, 185, 129, 0.3); color: #047857; font-weight: 700; }
+.arg.is-fixed { background: rgba(16, 185, 129, 0.3); color: #047857; font-weight: 700; }
 
 /* model */
 .model-col { display: flex; flex-direction: column; }

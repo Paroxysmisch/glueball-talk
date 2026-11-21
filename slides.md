@@ -109,14 +109,14 @@ That is where the speed comes from now. It is also where the difficulty comes fr
 
 <p> Humans cannot manually optimise every kernel.</p>
 
-<v-clicks>
+<AutoStagger>
 
 - **Understand** novel hardware intricacies
 - **Adapt** expert patterns to new kernels
 - **Explore** novel designs by combining optimisations
 - **Refine** them using profiler feedback
 
-</v-clicks>
+</AutoStagger>
 
 </div>
 
@@ -127,11 +127,11 @@ That is where the speed comes from now. It is also where the difficulty comes fr
 <!--
 Fixed compiler rules struggle to keep up with hardware that changes every generation. LLM agents are a promising alternative.
 
-[click] They can adapt expert patterns to each kernel,
-[click] try different designs,
-[click] and refine them using profiler feedback.
+[the bullets appear one after another when the slide comes in]
 
-[click] Benchmarks like KernelBench and TritonBench have made this an active research area.
+They can understand novel hardware, adapt expert patterns to each kernel, try different designs, and refine them using profiler feedback.
+
+Benchmarks like KernelBench and TritonBench have made this an active research area.
 -->
 
 ---
