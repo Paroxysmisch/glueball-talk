@@ -32,7 +32,7 @@ const rows = [
   {
     gpu: 'Blackwell', chip: 'B200', launch: date(2024, 3, 18), launchL: 'Mar 2024', done: date(2026, 3, 5), tint: '#8b5cf6',
     marks: [
-      { at: date(2025, 8, 25), fa: 'FA4 preview', u: '', final: false },
+      { at: date(2025, 8, 25), fa: '', u: 'preview', final: false },
       { at: date(2026, 3, 5), fa: 'FA4', u: '71%', final: true },
     ],
   },
