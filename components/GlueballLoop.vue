@@ -27,7 +27,8 @@ const DRAW = 0.6
 
 const cx = (i: number) => boxes[i].x + W / 2
 const delay = (s: number) => ({ transitionDelay: on.value ? `${s}s` : '0s' })
-/** arrowhead with its tip at (x, y); drawn separately so it only appears once its path has finished drawing */
+/** arrowhead with its tip at (x, y), 9 units long; drawn separately so it only appears once its path has finished
+ *  drawing. The paths stop 7 units short of the tip (inside the head's base) so the line never pokes past the point. */
 const head = (x: number, y: number, dir: 'up' | 'down') => {
   const d = dir === 'down' ? -1 : 1
   return `M ${x} ${y} L ${x - 5} ${y + 9 * d} L ${x + 5} ${y + 9 * d} Z`
@@ -49,12 +50,12 @@ const head = (x: number, y: number, dir: 'up' | 'down') => {
       />
 
       <!-- repeat loop: benchmark → back to the Gluon kernels (above) -->
-      <path :d="`M ${cx(6)} ${Y - 6} V ${Y - 46} H ${cx(1)} V ${Y - 8}`" class="repeat draw" :class="{ on }" :style="delay(REPEAT_AT)" pathLength="1" />
+      <path :d="`M ${cx(6)} ${Y - 6} V ${Y - 46} H ${cx(1)} V ${Y - 15}`" class="repeat draw" :class="{ on }" :style="delay(REPEAT_AT)" pathLength="1" />
       <path :d="head(cx(1), Y - 8, 'down')" class="head-y head" :class="{ on }" :style="delay(REPEAT_AT + DRAW)" />
       <text :x="(cx(1) + cx(6)) / 2" :y="Y - 54" class="tag tag-y fade" :class="{ on }" :style="delay(REPEAT_AT + 0.4)">repeat until max. rounds</text>
 
       <!-- retry loop: verify → implement (below), last -->
-      <path :d="`M ${cx(5)} ${Y + H + 6} V ${Y + H + 46} H ${cx(4)} V ${Y + H + 8}`" class="retry draw" :class="{ on }" :style="delay(RETRY_AT)" pathLength="1" />
+      <path :d="`M ${cx(5)} ${Y + H + 6} V ${Y + H + 46} H ${cx(4)} V ${Y + H + 15}`" class="retry draw" :class="{ on }" :style="delay(RETRY_AT)" pathLength="1" />
       <path :d="head(cx(4), Y + H + 8, 'up')" class="head-r head" :class="{ on }" :style="delay(RETRY_AT + DRAW)" />
       <text :x="(cx(4) + cx(5)) / 2" :y="Y + H + 68" class="tag tag-r fade" :class="{ on }" :style="delay(RETRY_AT + 0.4)">reject: retry with feedback</text>
 
