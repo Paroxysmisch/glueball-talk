@@ -34,7 +34,7 @@ Hi, I'm Yash. This talk is about Glueball: getting AI agents to write fast GPU c
 
 ---
 
-# Compute is outrunning the transistor
+# Compute need demands new architectures
 
 <ComputeGap />
 
@@ -193,7 +193,7 @@ I'll show each in turn, after the overall loop.
 
 ---
 
-# The loop
+# The optimisation & verification loop
 
 <p class="lede">Start from an existing Triton model. Each constituent kernel is iteratively optimised and checked for correctness.</p>
 
