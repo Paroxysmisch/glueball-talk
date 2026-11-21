@@ -110,11 +110,11 @@ const TX = [96, 230, 364, 498]
           </g>
           <!-- orderings into the wait: missing (bug) / present (fix) -->
           <g class="fade" :class="{ on: on(1) }" :style="d(4)">
-            <path d="M 80 32 L 122 64" :class="fixed ? 'hb' : 'missing'" />
-            <path v-if="fixed" d="M 116.5 57.5 L 123 65 L 113.5 63" class="hb" />
+            <path :d="fixed ? 'M 80 32 L 121 63' : 'M 80 32 L 122 64'" :class="fixed ? 'hb' : 'missing'" />
+            <path v-if="fixed" d="M 111.9 61.8 L 121 63 L 117.3 54.6" class="hb" />
             <path d="M 220 32 L 178 64" class="missing" :class="{ dim: fixed }" />
             <text v-if="!fixed" x="150" y="52" class="miss-t">not ordered</text>
-            <text v-else x="58" y="58" class="hb-t" text-anchor="end">happens before</text>
+            <text v-else x="89" y="50" class="hb-t" text-anchor="end">happens before</text>
           </g>
           <g class="ev fade" :class="{ on: on(1), flash: flashing('w') }" :style="d(2)">
             <GlassRect :x="55" :y="66" :w="190" :h="28" :rx="8" tint="#64748b" />
