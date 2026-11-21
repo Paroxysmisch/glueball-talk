@@ -29,17 +29,14 @@ const dirs = [
 <template>
   <div class="ps">
     <div class="axis">
-      <span>Software</span>
-      <svg class="axis-arrow" viewBox="0 0 400 12" preserveAspectRatio="none" aria-hidden="true">
-        <defs>
-          <linearGradient id="ps-axis" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="400" y2="0">
-            <stop offset="0%" stop-color="var(--slidev-theme-primary)" />
-            <stop offset="100%" stop-color="var(--slidev-theme-secondary)" />
-          </linearGradient>
-        </defs>
-        <line x1="2" y1="6" x2="398" y2="6" stroke="url(#ps-axis)" />
-      </svg>
-      <span>Hardware</span>
+      <span class="end-l">Software</span>
+      <!-- double-headed arrow: heads and body are adjacent flex items, so they always meet -->
+      <span class="arrow">
+        <i class="head left" />
+        <i class="body" />
+        <i class="head right" />
+      </span>
+      <span class="end-r">Hardware</span>
     </div>
 
     <div class="cards">
@@ -59,12 +56,11 @@ const dirs = [
 
 <style scoped>
 .ps { display: flex; flex-direction: column; gap: 12px; }
-.axis-arrow { flex: 1; height: 12px; overflow: visible; }
-.axis-arrow line { stroke-width: 2; opacity: 0.6; }
-/* double-headed: one head pointing at each end */
-.axis > span:first-child::after, .axis > span:last-child::before { content: ''; display: inline-block; vertical-align: middle; border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
-.axis > span:first-child::after { margin-left: 8px; margin-right: -13px; border-right: 8px solid var(--slidev-theme-primary); opacity: 0.8; }
-.axis > span:last-child::before { margin-left: -13px; margin-right: 8px; border-left: 8px solid var(--slidev-theme-secondary); opacity: 0.8; }
+.arrow { flex: 1; display: flex; align-items: center; opacity: 0.75; }
+.arrow .body { flex: 1; height: 2px; background: linear-gradient(90deg, var(--slidev-theme-primary), var(--slidev-theme-secondary)); }
+.arrow .head { width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+.arrow .head.left { border-right: 9px solid var(--slidev-theme-primary); }
+.arrow .head.right { border-left: 9px solid var(--slidev-theme-secondary); }
 .axis { display: flex; align-items: center; gap: 12px; font-family: 'Archivo', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--slidev-theme-ink-secondary); }
 
 .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }

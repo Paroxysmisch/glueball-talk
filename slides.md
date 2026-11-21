@@ -304,7 +304,7 @@ Mamba-2 only matched Triton: Triton's schedule there is already very good.
 
 <p>Real training and inference run across many GPUs, and increasingly across <strong>heterogeneous accelerators</strong>.</p>
 
-<div v-motion :initial="{ opacity: 0, y: 10 }" :enter="{ opacity: 1, y: 0, transition: { delay: 3200, duration: 500 } }">
+<div v-motion :initial="{ opacity: 0, y: 10 }" :enter="{ opacity: 1, y: 0, transition: { delay: 150, duration: 500 } }">
 
 - mismatched or skipped collectives
 - deadlocks across devices
