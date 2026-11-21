@@ -51,6 +51,8 @@ Where does that come from? Process nodes give us the bottom band: TSMC's roadmap
 
 Everything else, roughly 25×, has to come from architecture and software: specialised units, lower precision, asynchronous data movement, and software that actually uses them. And that software is getting harder to write.
 
+Assumes AI compute keeps growing ~2.25× a year while data-centre power only ~doubles by 2030. Node gains use TSMC's published power savings at the same speed.
+
 (Assumptions/data: needed perf/W = 2.25^(t-2024) / 2.3^((t-2024)/6): 2.25×/yr is AI 2027's global AI-compute growth (extended past 2027); 2.3× is the IEA's data-centre electricity growth 2024→2030. Node: TSMC power reduction at the same speed, taking the best node available each year vs N3E: N2 2025 (−25–30% → ×1.38), A16 2027 (−15–20% vs N2P → ×1.67 cumulative), A14 2028 (−25–30% vs N2 → ×1.90), A12 2029 (not disclosed; assumed like A14 vs N2 → ×2.3); nothing announced for 2030. Cross-check: TSMC's Kevin Zhang, Apr 2026: "Every two years, we drive 30% efficiency" → 1.3^3 ≈ 2.2 by 2030. Needed ≈ ×56; architecture & software ≈ 56 / 2.3 ≈ ×25. Epoch >10^27 counts decoded from their cumulative chart: 0 / 6 / 25 / 64 / 124 by the start of 2026–2030.)
 -->
 

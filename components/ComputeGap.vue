@@ -13,12 +13,10 @@ import { useAutoplay } from '../utils/autoplay'
 
 const { on, instant } = useAutoplay(250)
 
+// same years as the right chart, so the two x-axes line up (0 before 2027 in Epoch's projection)
 const models = [
-  { y: '2026', v: 0 },
-  { y: '2027', v: 6 },
-  { y: '2028', v: 25 },
-  { y: '2029', v: 64 },
-  { y: '2030', v: 124 },
+  { y: 2024, v: 0 }, { y: 2025, v: 0 }, { y: 2026, v: 0 },
+  { y: 2027, v: 6 }, { y: 2028, v: 25 }, { y: 2029, v: 64 }, { y: 2030, v: 124 },
 ]
 const MAXM = 140
 
@@ -54,6 +52,9 @@ const needTop = ts.map(t => `${sx(t).toFixed(1)},${sy(needAt(t)).toFixed(1)}`)
 const archArea = `M${needTop.join(' L')} L${nodeTop.slice().reverse().join(' L')} Z`
 const needLine = `M${needTop.join(' L')}`
 const NEED = needAt(Y1), NODE = nodeAt(Y1), ARCH = NEED / NODE
+// left chart: linear count axis in the same plot box
+const cy = (v: number) => PB - (v / MAXM) * (PB - PT)
+const BW = 24
 </script>
 
 <template>
@@ -62,22 +63,31 @@ const NEED = needAt(Y1), NODE = nodeAt(Y1), ARCH = NEED / NODE
     <div class="panel">
       <div class="head">
         <span class="t">Models trained with &gt;10<sup>27</sup> FLOP</span>
-        <span class="s">cumulative, by the start of each year · Epoch AI median projection</span>
+        <span class="s">cumulative count · Epoch AI median projection</span>
       </div>
-      <div class="bars">
-        <div v-for="(m, i) in models" :key="m.y" class="col">
-          <span class="v" :style="{ '--d': `${0.25 + i * 0.12 + 0.7}s` }">{{ m.v }}</span>
-          <div class="bar" :style="{ '--h': `${(m.v / MAXM) * 100}%`, '--d': `${0.25 + i * 0.12}s` }" />
-          <span class="yr">{{ m.y }}</span>
-        </div>
-      </div>
+      <svg :viewBox="`0 0 ${W} ${H}`" class="area" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="cg-bars" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="var(--slidev-theme-secondary)" />
+            <stop offset="100%" stop-color="var(--slidev-theme-primary)" />
+          </linearGradient>
+        </defs>
+        <line v-for="v in [0, 50, 100]" :key="'g' + v" :x1="PX" :x2="PR" :y1="cy(v)" :y2="cy(v)" class="grid" />
+        <text v-for="v in [0, 50, 100]" :key="'t' + v" :x="PX - 6" :y="cy(v) + 3" class="tick" text-anchor="end">{{ v }}</text>
+        <text v-for="y in [2024, 2026, 2028, 2030]" :key="y" :x="sx(y)" :y="PB + 15" class="tick" text-anchor="middle">{{ y }}</text>
+        <g v-for="(m, i) in models" :key="m.y">
+          <rect class="cbar" :x="sx(m.y) - BW / 2" :y="cy(m.v)" :width="BW" :height="PB - cy(m.v)" rx="4" :style="{ '--d': `${0.25 + i * 0.1}s` }" />
+          <text v-if="m.v" :x="sx(m.y)" :y="cy(m.v) - 5" class="cv" text-anchor="middle" :style="{ '--d': `${0.95 + i * 0.1}s` }">{{ m.v }}</text>
+        </g>
+        <line :x1="PX" :x2="PR" :y1="PB" :y2="PB" class="axis" />
+      </svg>
     </div>
 
     <!-- right: perf/W needed, split into process node vs architecture & software -->
     <div class="panel">
       <div class="head">
         <span class="t">Performance per watt needed</span>
-        <span class="s">relative to 2024, log scale · stacked by source of the gain</span>
+        <span class="s">relative to 2024, log scale · stacked by source</span>
       </div>
       <svg :viewBox="`0 0 ${W} ${H}`" class="area" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -115,26 +125,18 @@ const NEED = needAt(Y1), NODE = nodeAt(Y1), ARCH = NEED / NODE
           <text :x="PR + 8" :y="(sy(NODE) + sy(1)) / 2 + 4" class="l-node"><tspan class="l-v">×{{ NODE.toFixed(1) }}</tspan> process node</text>
         </g>
       </svg>
-      <div class="note">Assumes AI compute keeps growing ~2.25× a year while data-centre power only ~doubles by 2030. Node gains use TSMC's published power savings at the same speed.</div>
     </div>
 
   </div>
 </template>
 
 <style scoped>
-.cg { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 14px 44px; margin-top: 2px; }
-.head { display: flex; flex-direction: column; margin-bottom: 10px; }
+.cg { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 40px; margin-top: 2px; }
+.head { display: flex; flex-direction: column; margin-bottom: 10px; white-space: nowrap; }
 .head .t { font-family: 'Instrument Serif', serif; font-size: 24px; line-height: 1.1; color: var(--slidev-theme-ink); }
 .head .s { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 12px; color: var(--slidev-theme-ink-secondary); }
 
 /* left: vertical bars */
-.bars { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; height: 150px; align-items: end; border-bottom: 1px solid var(--slidev-theme-ink); padding: 0 6px; }
-.col { position: relative; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; }
-.bar { width: 70%; height: 0; border-radius: 6px 6px 0 0; background: linear-gradient(180deg, var(--slidev-theme-secondary), var(--slidev-theme-primary)); box-shadow: 0 6px 14px -8px rgba(var(--slidev-theme-primary-rgb), 0.8); transition: height 0.9s cubic-bezier(0.4, 0, 0.2, 1); transition-delay: var(--d); }
-.on .bar { height: var(--h); }
-.v { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--slidev-theme-ink); margin-bottom: 4px; opacity: 0; transition: opacity 0.3s ease; transition-delay: var(--d); }
-.on .v { opacity: 1; }
-.yr { position: absolute; bottom: -20px; font-family: var(--mono); font-size: 11px; color: var(--slidev-theme-ink-secondary); }
 
 /* right: log-scale horizontal bars */
 
@@ -155,7 +157,9 @@ const NEED = needAt(Y1), NODE = nodeAt(Y1), ARCH = NEED / NODE
 .l-need { fill: #b45309; }
 .l-arch { fill: #b45309; }
 .l-node { fill: var(--slidev-theme-primary); }
-.note { margin-top: 6px; font-family: 'Source Serif 4', serif; font-style: italic; font-size: 11.5px; line-height: 1.4; color: var(--slidev-theme-ink-secondary); opacity: 0; transition: opacity 0.5s ease 2.4s; }
-.on .note { opacity: 1; }
-.instant .bar, .instant .v, .instant .reveal, .instant .lbl, .instant .note { transition: none !important; }
+.instant .cbar, .instant .cv, .instant .reveal, .instant .lbl { transition: none !important; }
+.cbar { fill: url(#cg-bars); transform: scaleY(0); transform-origin: bottom; transform-box: fill-box; transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1); transition-delay: var(--d); }
+.on .cbar { transform: scaleY(1); }
+.cv { font-family: var(--mono); font-size: 11px; font-weight: 700; fill: var(--slidev-theme-ink); opacity: 0; transition: opacity 0.3s ease; transition-delay: var(--d); }
+.on .cv { opacity: 1; }
 </style>
