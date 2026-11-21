@@ -10,17 +10,17 @@ const on = (n: number) => props.step >= n
 const dirs = [
   {
     n: '1', area: 'Kernels', t: 'Agentic kernel optimisation & verification',
-    now: 'Glueball', next: 'Inequivalence checking: adversarial agents hunt for inputs where two kernels disagree; only mismatches reproduced on real hardware count.',
+    now: 'Glueball', next: 'Inequivalence checking: adversarial agents hunt for inputs where two kernels disagree.',
     at: 0,
   },
   {
     n: '2', area: 'Compilers', t: 'Agent-built compilers for new accelerators',
-    next: 'Agents learn a new accelerator (PLENA) from its docs and their own experiments, then build its XLA and Triton backends.',
+    next: 'Agents build an understanding of new accelerator hardware from documentation and their own experiments to build optimised XLA and Triton backends.',
     at: 1,
   },
   {
     n: '3', area: 'Hardware', t: 'AI-accelerated performance modelling',
-    next: 'One learned model predicting time, power and area for any design–workload pair, from RTL instead of slow simulation.',
+    next: 'One learned model predicting time, power and area for any design–workload pair, directly from RTL.',
     at: 1,
   },
 ]
