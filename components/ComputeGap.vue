@@ -5,9 +5,8 @@
  *       (values decoded from the "counts-over-time-cumulative" chart of
  *        https://epoch.ai/publications/model-counts-compute-thresholds; the same decoding reproduces the
  *        article's quoted 10^26 figures: ~34 by 2027, ~239 by 2030).
- * Right: AI 2027 compute forecast (Section 1): global AI compute vs AI datacentre power, 2023 -> 2027,
- *   normalised to 2023 (log scale): compute x25, power x12, so compute per watt only ~x2.
- *   Plus TSMC A14 vs N2: at most +15% speed at the same power (production 2028).
+ * Right: performance per watt needed by 2030 (stacked on a log scale): process-node gains (TSMC roadmap) at the
+ *   bottom, architecture & software on top. See the constants below for sources and assumptions.
  * Animates in when the slide appears.
  */
 import { useAutoplay } from '../utils/autoplay'
@@ -23,21 +22,38 @@ const models = [
 ]
 const MAXM = 140
 
-// AI 2027 compute forecast, Section 1 table (end of year): global AI compute stock in H100-equivalents and
-// total AI datacentre power. Normalised to 2023 = 1x. https://ai-2027.com/research/compute-forecast
-const YEARS = ['2023', '2024', '2025', '2026', '2027']
-const H100E = [4, 8.5, 18, 40, 100] // millions
-const GW = [5, 9, 15, 29, 62]
-const series = [
-  { k: 'compute', t: 'AI compute', v: H100E.map(x => x / H100E[0]) },
-  { k: 'power', t: 'AI datacentre power (62 GW)', v: GW.map(x => x / GW[0]) },
-  { k: 'eff', t: 'compute per watt', v: H100E.map((x, i) => (x / H100E[0]) / (GW[i] / GW[0])) },
+// ---- right: performance per watt needed, and where it can come from (stacked, log scale) ----
+// Needed: AI compute keeps growing 2.25x/yr (AI 2027 compute forecast, global AI compute stock; extended past 2027)
+// while data-centre power grows only ~2.3x by 2030 (IEA, Energy and AI) => perf/W must grow 2.25 / 2.3^(1/6) ~ 1.96x/yr.
+// Process node: cumulative perf/W from TSMC's leading node each year vs N3E, using the published power reduction at the
+// same speed (the generous reading): N2 2025 (-25..30%), A16 2027 (-15..20% vs N2P), A14 2028 (-25..30% vs N2),
+// A12 2029 (figures not disclosed; assumed like A14 vs N2). Nothing announced for 2030. Matches TSMC's "30% every two years".
+const Y0 = 2024, Y1 = 2030
+const needAt = (t: number) => (2.25 / 2.3 ** (1 / 6)) ** (t - Y0)
+const NODES = [
+  { y: 2024, f: 1, n: '' },
+  { y: 2025, f: 1.38, n: 'N2' },
+  { y: 2027, f: 1.67, n: 'A16' },
+  { y: 2028, f: 1.9, n: 'A14' },
+  { y: 2029, f: 2.3, n: 'A12' },
 ]
-const LW = 470, LH = 100, LX = 30, LY = 8 // plot box inside the SVG
-const xs = (i: number) => LX + (i / (YEARS.length - 1)) * (LW - LX - 190)
-const ys = (v: number) => LY + LH - (Math.log10(v) / Math.log10(30)) * LH
-const pathOf = (v: number[]) => v.map((y, i) => `${i ? 'L' : 'M'}${xs(i).toFixed(1)},${ys(y).toFixed(1)}`).join(' ')
-const endLabel = (v: number[]) => `×${v[v.length - 1] >= 10 ? Math.round(v[v.length - 1]) : v[v.length - 1].toFixed(1)}`
+const nodeAt = (t: number) => NODES.filter(n => n.y <= t + 1e-9).at(-1)!.f
+const W = 470, H = 176, PX = 34, PR = 382, PT = 10, PB = 150
+const sx = (t: number) => PX + ((t - Y0) / (Y1 - Y0)) * (PR - PX)
+const sy = (v: number) => PB - (Math.log10(v) / 2) * (PB - PT) // 1x .. 100x
+const ts = Array.from({ length: 61 }, (_, i) => Y0 + (i / 60) * (Y1 - Y0))
+// node band: stepped (a node arrives in its production year)
+const nodePts: [number, number][] = [[Y0, 1]]
+for (let i = 1; i < NODES.length; i++) nodePts.push([NODES[i].y, NODES[i - 1].f], [NODES[i].y, NODES[i].f])
+nodePts.push([Y1, NODES.at(-1)!.f])
+const nodeTop = nodePts.map(([t, v]) => `${sx(t).toFixed(1)},${sy(v).toFixed(1)}`)
+const nodeArea = `M${sx(Y0)},${sy(1)} L${nodeTop.join(' L')} L${sx(Y1)},${sy(1)} Z`
+const nodeLine = `M${nodeTop.join(' L')}`
+// architecture & software band: from the node boundary up to the "needed" curve
+const needTop = ts.map(t => `${sx(t).toFixed(1)},${sy(needAt(t)).toFixed(1)}`)
+const archArea = `M${needTop.join(' L')} L${nodeTop.slice().reverse().join(' L')} Z`
+const needLine = `M${needTop.join(' L')}`
+const NEED = needAt(Y1), NODE = nodeAt(Y1), ARCH = NEED / NODE
 </script>
 
 <template>
@@ -57,27 +73,51 @@ const endLabel = (v: number[]) => `×${v[v.length - 1] >= 10 ? Math.round(v[v.le
       </div>
     </div>
 
-    <!-- right: AI 2027 forecast: growth is being bought with power -->
+    <!-- right: perf/W needed, split into process node vs architecture & software -->
     <div class="panel">
       <div class="head">
-        <span class="t">Growth is being bought with power</span>
-        <span class="s">AI 2027 forecast, relative to 2023 · log scale</span>
+        <span class="t">Performance per watt needed</span>
+        <span class="s">relative to 2024, log scale · stacked by source of the gain</span>
       </div>
-      <svg :viewBox="`0 0 ${LW} ${LY + LH + 22}`" class="lines" xmlns="http://www.w3.org/2000/svg">
-        <line v-for="t in [1, 10]" :key="'g' + t" :x1="LX" :x2="xs(4)" :y1="ys(t)" :y2="ys(t)" class="grid" />
-        <text v-for="t in [1, 10]" :key="'t' + t" :x="LX - 6" :y="ys(t) + 3" class="tick" text-anchor="end">{{ t }}×</text>
-        <text v-for="(y, i) in YEARS" :key="y" :x="xs(i)" :y="LY + LH + 16" class="tick" text-anchor="middle">{{ y }}</text>
-        <line :x1="LX" :x2="xs(4)" :y1="LY + LH" :y2="LY + LH" class="axis" />
-        <g v-for="(sr, i) in series" :key="sr.k" :class="['series', sr.k]">
-          <path :d="pathOf(sr.v)" pathLength="1" class="ln" :style="{ '--d': `${0.5 + i * 0.35}s` }" />
-          <circle :cx="xs(4)" :cy="ys(sr.v[4])" r="3.2" class="dot" :style="{ '--d': `${1.4 + i * 0.35}s` }" />
-          <text :x="xs(4) + 8" :y="ys(sr.v[4]) + 4" class="end" :style="{ '--d': `${1.4 + i * 0.35}s` }"><tspan class="end-v">{{ endLabel(sr.v) }}</tspan> {{ sr.t }}</text>
+      <svg :viewBox="`0 0 ${W} ${H}`" class="area" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="cg-reveal"><rect class="reveal" :x="PX - 2" y="0" :width="PR - PX + 4" :height="H" /></clipPath>
+          <linearGradient id="cg-arch" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="var(--slidev-theme-accent)" stop-opacity="0.55" />
+            <stop offset="100%" stop-color="var(--slidev-theme-accent)" stop-opacity="0.22" />
+          </linearGradient>
+          <linearGradient id="cg-node" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="var(--slidev-theme-primary)" stop-opacity="0.45" />
+            <stop offset="100%" stop-color="var(--slidev-theme-primary)" stop-opacity="0.18" />
+          </linearGradient>
+        </defs>
+        <!-- grid + axes -->
+        <line v-for="v in [1, 10, 100]" :key="'g' + v" :x1="PX" :x2="PR" :y1="sy(v)" :y2="sy(v)" class="grid" />
+        <text v-for="v in [1, 10, 100]" :key="'t' + v" :x="PX - 6" :y="sy(v) + 3" class="tick" text-anchor="end">{{ v }}×</text>
+        <text v-for="y in [2024, 2026, 2028, 2030]" :key="y" :x="sx(y)" :y="PB + 15" class="tick" text-anchor="middle">{{ y }}</text>
+        <!-- stacked areas, revealed left to right -->
+        <g clip-path="url(#cg-reveal)">
+          <path :d="archArea" fill="url(#cg-arch)" />
+          <path :d="nodeArea" fill="url(#cg-node)" />
+          <path :d="nodeLine" class="node-line" />
+          <path :d="needLine" class="need-line" />
+          <g v-for="n in NODES.slice(1)" :key="n.n">
+            <circle :cx="sx(n.y)" :cy="sy(n.f)" r="2.6" class="node-dot" />
+            <text :x="sx(n.y) + 3" :y="sy(n.f) - 5" class="node-n">{{ n.n }}</text>
+          </g>
+        </g>
+        <line :x1="PX" :x2="PR" :y1="PB" :y2="PB" class="axis" />
+        <!-- end labels -->
+        <g class="lbl">
+          <text :x="PR + 8" :y="sy(NEED) + 4" class="l-need"><tspan class="l-v">×{{ Math.round(NEED) }}</tspan> needed</text>
+          <text :x="PR + 8" :y="(sy(NEED) + sy(NODE)) / 2 + 2" class="l-arch"><tspan class="l-v">×{{ Math.round(ARCH) }}</tspan> architecture</text>
+          <text :x="PR + 8" :y="(sy(NEED) + sy(NODE)) / 2 + 15" class="l-arch">&amp; software</text>
+          <text :x="PR + 8" :y="(sy(NODE) + sy(1)) / 2 + 4" class="l-node"><tspan class="l-v">×{{ NODE.toFixed(1) }}</tspan> process node</text>
         </g>
       </svg>
-      <div class="note">Process nodes won't close the gap: TSMC's A14 (2028) is at most <span class="nk">15%</span> faster than N2 at the same power.</div>
+      <div class="note">Assumes AI compute keeps growing ~2.25× a year while data-centre power only ~doubles by 2030. Node gains use TSMC's published power savings at the same speed.</div>
     </div>
 
-    <div class="punch">…and every new architectural feature makes the software harder: FlashAttention went from 35% to 75% of H100 peak only ~2 years after Hopper launched.</div>
   </div>
 </template>
 
@@ -98,24 +138,24 @@ const endLabel = (v: number[]) => `×${v[v.length - 1] >= 10 ? Math.round(v[v.le
 
 /* right: log-scale horizontal bars */
 
-.lines { width: 100%; height: auto; overflow: visible; }
+.area { width: 100%; height: auto; overflow: visible; }
 .grid { stroke: var(--slidev-theme-border); }
 .axis { stroke: var(--slidev-theme-ink); opacity: 0.5; }
 .tick { font-family: var(--mono); font-size: 9px; fill: var(--slidev-theme-ink-secondary); }
-.ln { fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.1s cubic-bezier(0.4, 0, 0.2, 1); transition-delay: var(--d); }
-.on .ln { stroke-dashoffset: 0; }
-.dot, .end { opacity: 0; transition: opacity 0.35s ease; transition-delay: var(--d); }
-.on .dot, .on .end { opacity: 1; }
-.end { font-family: 'Source Serif 4', serif; font-size: 11px; fill: var(--slidev-theme-ink-secondary); }
-.end-v { font-family: var(--mono); font-weight: 700; font-size: 12px; fill: var(--slidev-theme-ink); }
-.compute .ln { stroke: var(--slidev-theme-primary); } .compute .dot { fill: var(--slidev-theme-primary); }
-.power .ln { stroke: #94a3b8; } .power .dot { fill: #94a3b8; }
-.eff .ln { stroke: var(--slidev-theme-accent); stroke-width: 3; } .eff .dot { fill: var(--slidev-theme-accent); }
-.eff .end, .eff .end-v { fill: #b45309; }
-.note { margin-top: 6px; font-family: 'Source Serif 4', serif; font-size: 12.5px; line-height: 1.4; color: var(--slidev-theme-ink-secondary); opacity: 0; transition: opacity 0.5s ease 2s; }
+.reveal { transform: scaleX(0); transform-origin: left; transform-box: fill-box; transition: transform 1.8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s; }
+.on .reveal { transform: scaleX(1); }
+.node-line { fill: none; stroke: var(--slidev-theme-primary); stroke-width: 1.6; }
+.need-line { fill: none; stroke: #b45309; stroke-width: 2.2; }
+.node-dot { fill: var(--slidev-theme-primary); }
+.node-n { font-family: var(--mono); font-size: 8.5px; font-weight: 700; fill: var(--slidev-theme-primary); }
+.lbl { opacity: 0; transition: opacity 0.5s ease 2.2s; }
+.on .lbl { opacity: 1; }
+.l-v { font-family: var(--mono); font-weight: 700; font-size: 12px; }
+.l-need, .l-arch, .l-node { font-family: 'Source Serif 4', serif; font-size: 11px; }
+.l-need { fill: #b45309; }
+.l-arch { fill: #b45309; }
+.l-node { fill: var(--slidev-theme-primary); }
+.note { margin-top: 6px; font-family: 'Source Serif 4', serif; font-style: italic; font-size: 11.5px; line-height: 1.4; color: var(--slidev-theme-ink-secondary); opacity: 0; transition: opacity 0.5s ease 2.4s; }
 .on .note { opacity: 1; }
-.nk { font-family: var(--mono); font-weight: 700; color: var(--slidev-theme-ink); }
-.punch { grid-column: 1 / -1; margin-top: 18px; font-family: 'Instrument Serif', serif; font-style: italic; font-size: 19px; line-height: 1.25; color: var(--slidev-theme-ink); opacity: 0; transition: opacity 0.6s ease 2.2s; }
-.on .punch { opacity: 1; }
-.instant .bar, .instant .v, .instant .ln, .instant .dot, .instant .end, .instant .note, .instant .punch { transition: none !important; }
+.instant .bar, .instant .v, .instant .reveal, .instant .lbl, .instant .note { transition: none !important; }
 </style>

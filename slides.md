@@ -38,20 +38,20 @@ Hi, I'm Yash. This talk is about Glueball: getting AI agents to write fast GPU c
 
 <ComputeGap />
 
-<p class="sources">Sources: Epoch AI, <em>How many AI models will exceed compute thresholds?</em> (2025) · AI 2027, <em>Compute Forecast</em> (Dean, 2025) · TSMC A14 announcement (Apr 2025) · Shah et al., <em>FlashAttention-3</em> (2024).</p>
+<p class="sources">Sources: Epoch AI, <em>How many AI models will exceed compute thresholds?</em> (2025) · AI 2027, <em>Compute Forecast</em> (2025) · IEA, <em>Energy and AI</em> (2025) · TSMC Technology Symposium roadmaps (2025, 2026).</p>
 
 <!--
 [the charts animate in when the slide appears]
 
 Training compute is what has driven AI progress, and it keeps growing. Epoch AI's projections: today there are essentially no models trained with more than 10^27 FLOP. By 2030, in their median scenario, there will be over a hundred.
 
-So where does all that compute come from? Look at how it's been growing. The AI 2027 compute forecast has the world's AI compute growing about 25-fold from 2023 to 2027, but AI datacentre power growing 12-fold alongside it, to 62 gigawatts. Compute per watt only doubles. We're mostly buying compute with more chips and more power, and that can't keep going.
+We can't just keep adding power to pay for that. If AI compute keeps growing at its current ~2.25× a year, and data-centre power only roughly doubles by 2030, performance per watt has to improve by around 50-fold.
 
-And process nodes won't save us: TSMC's A14, in production in 2028, is at most 15% faster than N2 at the same power. The rest has to come from architecture: specialised units, lower precision, asynchronous data movement.
+Where does that come from? Process nodes give us the bottom band: TSMC's roadmap, N2, then A16, A14, and A12 in 2029, adds up to a bit over 2× in efficiency. TSMC themselves say about 30% every two years. That's only about a fifth of what we need, in orders of magnitude.
 
-That's the catch. Every new hardware feature makes the software harder to write. When Hopper launched, FlashAttention-2 reached only 35% of its peak; it took about two years for FlashAttention-3 to reach 75%.
+Everything else, roughly 25×, has to come from architecture and software: specialised units, lower precision, asynchronous data movement, and software that actually uses them. And that software is getting harder to write.
 
-(Data: Epoch median counts, decoded from their cumulative chart: >10^27 FLOP models 0 / 6 / 25 / 64 / 124 by the start of 2026–2030. AI 2027 Section 1 table, end of year 2023–2027: AI compute 4 / 8.5 / 18 / 40 / 100 M H100e; AI datacentre power 5 / 9 / 15 / 29 / 62 GW; so ×25 compute, ×12.4 power, ×2.0 compute per watt. AI 2027 labels this section "uncertain but informed".)
+(Assumptions/data: needed perf/W = 2.25^(t-2024) / 2.3^((t-2024)/6): 2.25×/yr is AI 2027's global AI-compute growth (extended past 2027); 2.3× is the IEA's data-centre electricity growth 2024→2030. Node: TSMC power reduction at the same speed, taking the best node available each year vs N3E: N2 2025 (−25–30% → ×1.38), A16 2027 (−15–20% vs N2P → ×1.67 cumulative), A14 2028 (−25–30% vs N2 → ×1.90), A12 2029 (not disclosed; assumed like A14 vs N2 → ×2.3); nothing announced for 2030. Cross-check: TSMC's Kevin Zhang, Apr 2026: "Every two years, we drive 30% efficiency" → 1.3^3 ≈ 2.2 by 2030. Needed ≈ ×56; architecture & software ≈ 56 / 2.3 ≈ ×25. Epoch >10^27 counts decoded from their cumulative chart: 0 / 6 / 25 / 64 / 124 by the start of 2026–2030.)
 -->
 
 ---
