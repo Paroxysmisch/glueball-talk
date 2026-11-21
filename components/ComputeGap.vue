@@ -36,7 +36,7 @@ const NODES = [
   { y: 2029, f: 2.3, n: 'A12' },
 ]
 const nodeAt = (t: number) => NODES.filter(n => n.y <= t + 1e-9).at(-1)!.f
-const W = 470, H = 176, PX = 34, PR = 382, PT = 10, PB = 150
+const W = 470, H = 226, PX = 34, PR = 382, PT = 10, PB = 200
 const sx = (t: number) => PX + ((t - Y0) / (Y1 - Y0)) * (PR - PX)
 const sy = (v: number) => PB - (Math.log10(v) / 2) * (PB - PT) // 1x .. 100x
 const ts = Array.from({ length: 61 }, (_, i) => Y0 + (i / 60) * (Y1 - Y0))
