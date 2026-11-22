@@ -7,8 +7,7 @@
  *        article's quoted 10^26 figures: ~34 by 2027, ~239 by 2030).
  * Right: global AI tokens processed per month, LINEAR scale, Goldman Sachs Research ("Decoding the Agentic Economy",
  *        May 2026; figures as reported by GS Insights and I/O Fund): ~1.7Q (mid-2025, estimate), ~5.6Q (May 2026,
- *        estimate), ~47Q (2028, forecast), ~120Q (mid-2030, forecast; "24x" from 2026). Between the published points
- *        the curve is interpolated geometrically (constant growth rate), so it has no extra data in it.
+ *        estimate), ~47Q (2028, forecast), ~120Q (mid-2030, forecast; "24x" from 2026), joined by straight lines.
  * Animates in when the slide appears.
  */
 import { useAutoplay } from '../utils/autoplay'
@@ -38,21 +37,13 @@ const knots = [
 const NOW = knots[1].t
 const tx = (t: number) => PX + ((t - T0) / (T1 - T0)) * (PR - PX)
 const ty = (v: number) => PB - (v / MAXT) * (PB - PT)
-// geometric interpolation between published points
-const tokAt = (t: number) => {
-  for (let i = 0; i < knots.length - 1; i++) {
-    const a = knots[i], b = knots[i + 1]
-    if (t <= b.t + 1e-9) return a.v * (b.v / a.v) ** ((t - a.t) / (b.t - a.t))
-  }
-  return knots.at(-1)!.v
-}
-const curve = (a: number, b: number, n = 60) =>
-  Array.from({ length: n + 1 }, (_, i) => a + (i / n) * (b - a)).map(t => `${tx(t).toFixed(1)},${ty(tokAt(t)).toFixed(1)}`)
-const pastPts = curve(knots[0].t, NOW, 12)
-const futPts = curve(NOW, knots.at(-1)!.t, 80)
+// published points joined by straight lines
+const pt = (k: { t: number, v: number }) => `${tx(k.t).toFixed(1)},${ty(k.v).toFixed(1)}`
+const pastPts = knots.slice(0, 2).map(pt)
+const futPts = knots.slice(1).map(pt)
 const pastLine = `M${pastPts.join(' L')}`
 const futLine = `M${futPts.join(' L')}`
-const tokArea = `M${tx(knots[0].t)},${PB} L${[...pastPts, ...futPts].join(' L')} L${tx(knots.at(-1)!.t)},${PB} Z`
+const tokArea = `M${tx(knots[0].t)},${PB} L${[...pastPts, ...futPts.slice(1)].join(' L')} L${tx(knots.at(-1)!.t)},${PB} Z`
 const GROWTH = Math.round(knots.at(-1)!.v / knots[0].v / 10) * 10 // ~70
 </script>
 

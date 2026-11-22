@@ -9,7 +9,7 @@ bun run dev          # http://localhost:3030, presenter view at /presenter (scri
 bun run export       # PDF (needs playwright-chromium, already a devDependency)
 ```
 
-- `slides.md` — 18 slides; the full spoken script lives in each slide's presenter notes.
+- `slides.md` — 19 slides; the full spoken script lives in each slide's presenter notes.
 - `components/` — the animated figures (all driven by `$clicks`).
 - `style.css` — deck-specific helpers on top of the theme.
 - PhD theme / year-one milestone / longer-term goal are placeholders on slide 15 (`.ph` boxes).
