@@ -192,3 +192,10 @@ html .cover-author { margin-top: 22px !important; font-size: 18px !important; }
 
 /* source line on data slides */
 html .slidev-layout p.sources { position: absolute; left: var(--slidev-theme-pad-edge); right: var(--slidev-theme-pad-edge); bottom: 38px; margin: 0; font-size: 10.5px; line-height: 1.4; opacity: 0.7; }
+
+/* ---------- slide 7: why compilers struggle ---------- */
+.slidev-layout ul.why { margin: 2px 0 12px; padding: 6px 12px 6px 28px; border-left: 2px solid rgba(225, 29, 72, 0.45); background: rgba(225, 29, 72, 0.04); border-radius: 0 8px 8px 0; }
+.slidev-layout ul.why li { font-size: 13px; line-height: 1.4; margin: 2px 0; color: var(--slidev-theme-ink-secondary); }
+.slidev-layout ul.why li::marker { color: #e11d48; }
+.slidev-layout ul.why strong { color: var(--slidev-theme-ink); font-weight: 600; }
+.slidev-layout p.but { margin: 0 0 2px; }

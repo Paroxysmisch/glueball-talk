@@ -129,9 +129,15 @@ However maximising this overlap requires rethinking algorithmic implementation t
 <div class="grid grid-cols-[1fr_330px] gap-12 items-center mt-4">
 <div>
 
-<p class="lede">Compilers are struggling to keep up with specialised hardware that changes every generation.</p>
+<p class="lede">Compilers can't keep up with hardware that changes every generation:</p>
 
-<p> Humans cannot manually optimise every kernel.</p>
+<ul class="why">
+<li><strong>New units</strong> (TMA, async MMA, TMEM) need new compiler passes</li>
+<li><strong>The best schedule differs per kernel</strong>; fixed heuristics miss it</li>
+<li><strong>Even Triton</strong> added Gluon as a hand-tuning escape hatch</li>
+</ul>
+
+<p class="but">Humans can't hand-optimise every kernel. Agents can:</p>
 
 <AutoStagger>
 
@@ -149,7 +155,15 @@ However maximising this overlap requires rethinking algorithmic implementation t
 </div>
 
 <!--
-Whilst traditional compilers are really struggling to keep-up, with humans not being fast enough and hard to scale to optimise 100s or 1000s of kernels, fortunately agents offer some hope.
+Why are compilers struggling? Three reasons.
+
+First, every generation adds new hardware: the TMA copy engine, asynchronous tensor-core instructions, Blackwell's tensor memory. Each one needs new compiler passes and cost models written by hand, which takes years.
+
+Second, there is no single right answer. How to split a kernel into producer and consumer warps, how many pipeline stages, which memory layout: the best choice depends on the structure of each kernel, so fixed rules and autotuning leave performance on the table.
+
+Third, the compiler people themselves have conceded this. Triton added Gluon, a lower-level language, precisely so that experts can hand-write what the compiler can't do automatically.
+
+And humans are not fast enough, and don't scale to hundreds or thousands of kernels. Fortunately, agents offer some hope.
 -->
 
 ---
