@@ -282,17 +282,13 @@ On a harder suite of synchronisation bugs, it cut false positives, from seven to
 -->
 
 ---
-clicks: 1
----
 
 # Formal tools reduce token usage
 
-<AblationBars :step="$clicks" />
+<AblationBars />
 
 <!--
 We also switched the two tools on and off. With both tools, the agent needs about 40% fewer tokens to find the bugs: 0.93 million instead of 1.52 million.
-
-[click] And without either tool, the raw model raises seven false positives on 21 bug-free kernels. With either tool, that drops to zero.
 -->
 
 ---
