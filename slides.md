@@ -36,25 +36,46 @@ Presenting my work Glueball
 
 ---
 
-# Compute need demands new architect
+# AI compute demand is exploding
 
-<ComputeGap />
+<ComputeDemand />
 
-<p class="sources">Sources: Epoch AI, <em>How many AI models will exceed compute thresholds?</em> (2025) · AI 2027, <em>Compute Forecast</em> (2025) · IEA, <em>Energy and AI</em> (2025) · TSMC Technology Symposium roadmaps (2025, 2026).</p>
+<p class="sources">Sources: Epoch AI, <em>How many AI models will exceed compute thresholds?</em> (2025) · Goldman Sachs Research, <em>Decoding the Agentic Economy</em> (May 2026), as reported by Goldman Sachs Insights and I/O Fund (2026).</p>
 
 <!--
-Model capability has largely been driven by scaling laws
-Whilst today there are essentially no models trained with more than 10^27 FLOPs. By 2030, we expect over a 100. This requires vastly more compute.
+Model capability has largely been driven by scaling laws, and demand for compute is growing on two fronts.
 
-But, we can't just keep adding power to pay for that. Even if data-centre power roughly doubles by 2030, performance per watt has to improve by around 50-fold.
+[left] Training. Today there are essentially no models trained with more than 10^27 FLOPs. By 2030, Epoch expects over a hundred.
 
-Where does that come from? Process node developments only give us a 2x improvement.
+[right] And inference, actually using these models, is growing even faster. Goldman Sachs estimates the world processed about 1.7 quadrillion tokens a month in mid-2025. They forecast about 120 quadrillion a month by 2030, roughly 70 times more, mostly because of agents. An agent doesn't answer one question; it runs a long loop of model calls, reading files, calling tools, thinking. And this is on a linear scale: the curve is only just starting.
 
-The remaining 25×, has to come from architecture: things like specialised arithmetic units, lower precision, asynchronous data movement.
+For context, Google alone went from about 10 trillion tokens a month in 2024 to 3.2 quadrillion in May 2026.
 
-However, more complex hardware, means that the software we have to write to get the most out of the hardware also becomes more complicated.
+(Data: Epoch >10^27 counts decoded from their cumulative chart: 0 / 6 / 25 / 64 / 124 by the start of 2026–2030. Goldman Sachs tokens/month: ~1.7Q mid-2025 and ~5.6Q May 2026 (estimates), ~47Q in 2028 and ~120Q mid-2030 (forecast, "24× from 2026"); the curve between published points is geometric interpolation. Google: 9.7T Apr 2024, 3.2Q May 2026, Sundar Pichai at I/O 2025 / 2026.)
+-->
 
-(Assumptions/data: needed perf/W = 2.25^(t-2024) / 2.3^((t-2024)/6): 2.25×/yr is AI 2027's global AI-compute growth (extended past 2027); 2.3× is the IEA's data-centre electricity growth 2024→2030. Node: TSMC power reduction at the same speed, taking the best node available each year vs N3E: N2 2025 (−25–30% → ×1.38), A16 2027 (−15–20% vs N2P → ×1.67 cumulative), A14 2028 (−25–30% vs N2 → ×1.90), A12 2029 (not disclosed; assumed like A14 vs N2 → ×2.3); nothing announced for 2030. Cross-check: TSMC's Kevin Zhang, Apr 2026: "Every two years, we drive 30% efficiency" → 1.3^3 ≈ 2.2 by 2030. Needed ≈ ×56; architecture & software ≈ 56 / 2.3 ≈ ×25. Epoch >10^27 counts decoded from their cumulative chart: 0 / 6 / 25 / 64 / 124 by the start of 2026–2030.)
+---
+
+# Power alone can't close the gap
+
+<PowerWall />
+
+<p class="sources">Sources: IEA, <em>Key Questions on Energy and AI</em> (2026) · NVIDIA DGX / GB200 / GB300 / Vera Rubin specifications · Uptime Institute, <em>Global Data Center Survey</em> (2025) · AI 2027, <em>Compute Forecast</em> (2025) · TSMC Technology Symposium roadmaps (2025, 2026).</p>
+
+<!--
+The obvious answer is to just build more data centres and plug in more power. That runs into two walls.
+
+[top left] First, power infrastructure is slow. According to the IEA, a grid connection takes five to ten years in many places, a new transmission line four to eight, a gas turbine about five years to be delivered, and even a transformer two to three. Meanwhile NVIDIA ships a new GPU generation every year. Already, 30 to 50% of the large data-centre projects planned for 2026 are expected to be delayed, mostly by power.
+
+[bottom left] Second, density. You can't just pack more chips into the same building. A rack of A100s drew about 26 kilowatts. A GB200 rack draws 120, Vera Rubin about 190, and NVIDIA's announced Rubin Ultra rack 600 kilowatts, the power of a small neighbourhood in the space of a fridge. Air cooling stops working at around 50 kilowatts, so every rack since Blackwell needs liquid cooling, new power delivery, new buildings. The average data-centre rack today is about 9 kilowatts.
+
+[right] So let's put it together. AI compute demand grows about 130 times by 2030. Even with AI data centres growing their power 4.5 times, which is what the IEA expects, and the best TSMC process roadmap giving about 2.3 times, that's only about 10 times combined.
+
+The remaining 13 times, more than power and process node combined, has to come from architecture: specialised arithmetic units, lower precision, asynchronous data movement.
+
+However, more complex hardware means the software we have to write to get the most out of it also becomes more complicated.
+
+(Assumptions/data: demand = 2.25^(t-2024), AI 2027's global AI-compute growth, extended past 2027 → ×130. Power: IEA Apr 2026, AI-focused data-centre electricity +50% in 2025 and ×3 2025→2030 → ×4.5 vs 2024 (all data centres: 485 → 950 TWh, ×2). Node: TSMC power reduction at the same speed, best node each year vs N3E: N2 2025 (×1.38), A16 2027 (×1.67), A14 2028 (×1.90), A12 2029 (not disclosed; assumed like A14 vs N2 → ×2.3); cross-check: TSMC's Kevin Zhang, "every two years, we drive 30% efficiency" → 1.3^3 ≈ 2.2. Architecture & software = 130 / (4.5 × 2.3) ≈ ×12.5. Lead times: IEA Key Questions §1.3 (transformers 2–3 yrs, gas turbines ~5 yrs per Wood Mackenzie, grid connection 5–10 yrs; transmission 4–8 yrs). Delays: Sightline Climate (Feb 2026). Racks: 4× DGX A100 at 6.5 kW; 4× DGX H100 40.8 kW (SuperPOD guide); GB200 NVL72 120 kW, GB300 NVL72 135 kW (Mission Control); Vera Rubin NVL72 187 kW Max-Q / 227 kW Max-P; Rubin Ultra NVL576 ~600 kW (GTC 2025). Air cooling impractical >~50 kW/rack, average ~9 kW: Uptime Institute.)
 -->
 
 ---
