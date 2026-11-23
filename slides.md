@@ -56,7 +56,7 @@ For context, Google alone went from about 10 trillion tokens a month in 2024 to 
 
 ---
 
-# Power alone can't close the gap
+# Increasing power alone can't close the gap
 
 <PowerWall class="mt-2" />
 
@@ -133,8 +133,8 @@ However maximising this overlap requires rethinking algorithmic implementation t
 
 <ul class="why">
 <li><strong>New units</strong> (TMA, async MMA, TMEM) need new compiler passes</li>
-<li><strong>The best schedule differs per kernel</strong>; fixed heuristics miss it</li>
-<li><strong>Even Triton</strong> added Gluon as a hand-tuning escape hatch</li>
+<li><strong>Fixed heuristics</strong> cannot adapt to unique computation patterns</li>
+<li><strong>Scheduling</strong> of different hardware units well is difficult</li>
 </ul>
 
 <p class="but">Humans can't hand-optimise every kernel. Agents can:</p>
@@ -309,7 +309,7 @@ We also switched the two tools on and off. With both tools, the agent needs abou
 
 # Precise verification unlocks optimisations
 
-<p class="lede">Median end-to-end speed-up over human-expert Triton baseline on held-out input shapes (best of four agents).</p>
+<p class="lede">Median end-to-end speed-up over human-expert Triton baseline on held-out input shapes.</p>
 
 <SpeedupBars class="mt-2" />
 
