@@ -2,7 +2,7 @@
 /**
  * Slide 10 — best-agent median end-to-end speedup over Triton
  * (figures/speedups.json in the poster repo; Fig. 3 in the paper).
- * Whole models and standalone kernels each get their own axis (0.96×–1.12× and 0.8×–1.8×), since whole-model
+ * Whole models and standalone kernels each get their own axis (0.97×–1.12× and 0.8×–1.8×, with 1× at the same position), since whole-model
  * gains are expected to be smaller. Neighbourhood attention (24.85×) is off-scale, so its bar runs past the axis
  * end with a break, and its label sits after it like every other label.
  * Bars grow when the slide appears.
@@ -10,10 +10,11 @@
 import { useAutoplay } from '../utils/autoplay'
 
 type Row = { name: string, v: number, l: string, note: string, par?: boolean, broken?: boolean }
-// each group has its own scale: whole-model gains are expected to be smaller than kernel gains
+// each group has its own scale: whole-model gains are expected to be smaller than kernel gains.
+// Both scales put 1.00x at 20% of the axis (and ticks at the same six positions), so the 1x lines align.
 const groups: { title: string, min: number, max: number, dp: number, ticks: number[], rows: Row[] }[] = [
   {
-    title: 'Whole models', min: 0.96, max: 1.12, dp: 2, ticks: [0.96, 1.0, 1.04, 1.08, 1.12],
+    title: 'Whole models', min: 0.97, max: 1.12, dp: 2, ticks: [0.97, 1.0, 1.03, 1.06, 1.09, 1.12],
     rows: [
       { name: 'GPT-OSS', v: 1.067, l: '1.07', note: 'transpose folded into TMA descriptor' },
       { name: 'Qwen-3.5 MoE', v: 1.075, l: '1.08', note: 'expert routing via TMA gather' },
