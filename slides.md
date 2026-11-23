@@ -40,18 +40,18 @@ Presenting my work Glueball
 
 <ComputeDemand />
 
-<p class="sources">Sources: Epoch AI, <em>How many AI models will exceed compute thresholds?</em> (2025) · Goldman Sachs Research, <em>Decoding the Agentic Economy</em> (May 2026), as reported by Goldman Sachs Insights and I/O Fund (2026).</p>
+<p class="sources">Sources: Epoch AI, <em>How many AI models will exceed compute thresholds?</em> (2025) · Goldman Sachs Research, via Goldman Sachs Insights, <em>AI Agents Forecast to Boost Tech Cash Flow as Usage Soars</em> (May 2026).</p>
 
 <!--
 Model capability has largely been driven by scaling laws, and demand for compute is growing on two fronts.
 
 [left] Training. Today there are essentially no models trained with more than 10^27 FLOPs. By 2030, Epoch expects over a hundred.
 
-[right] And inference, actually using these models, is growing even faster. Goldman Sachs estimates the world processed about 1.7 quadrillion tokens a month in mid-2025. They forecast about 120 quadrillion a month by 2030, roughly 70 times more, mostly because of agents. An agent doesn't answer one question; it runs a long loop of model calls, reading files, calling tools, thinking. And this is on a linear scale: we are only at the very start of that curve.
+[right] And inference, actually using these models, is growing even faster. Goldman Sachs estimates the world processed about 1.7 quadrillion tokens a month in mid-2025. They forecast about 120 quadrillion a month by 2030, roughly 70 times more, and the colours show where it comes from: most of the growth is consumer and enterprise agents. An agent doesn't answer one question; it runs a long loop of model calls, reading files, calling tools, thinking. And this is on a linear scale: we are only at the very start of that curve.
 
 For context, Google alone went from about 10 trillion tokens a month in 2024 to 3.2 quadrillion in May 2026.
 
-(Data: Epoch >10^27 counts decoded from their cumulative chart: 0 / 6 / 25 / 64 / 124 by the start of 2026–2030. Goldman Sachs tokens/month: ~1.7Q mid-2025 and ~5.6Q May 2026 (estimates), ~47Q in 2028 and ~120Q mid-2030 (forecast, "24× from 2026"); published points joined by straight lines. Google: 9.7T Apr 2024, 3.2Q May 2026, Sundar Pichai at I/O 2025 / 2026.)
+(Data: Epoch >10^27 counts decoded from their cumulative chart: 0 / 6 / 25 / 64 / 124 by the start of 2026–2030. Goldman Sachs tokens/month, total (non-agent / consumer agents / enterprise agents), from the chart in their May 2026 article: Apr 2024 0.14Q; May 2025 1.71Q; Apr 2026 5.57Q (estimates); May 2027 28.9Q (7.9 / 7.4 / 13.6); May 2028 47.0Q (10.7 / 16.0 / 20.4); May 2029 74.2Q (13.5 / 28.4 / 32.3); May 2030 117.7Q (16.3 / 45.1 / 56.3) (forecasts); published points joined by straight lines. Google: 9.7T Apr 2024, 3.2Q May 2026, Sundar Pichai at I/O 2025 / 2026.)
 -->
 
 ---

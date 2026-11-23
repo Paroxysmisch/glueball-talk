@@ -5,9 +5,9 @@
  *       (values decoded from the "counts-over-time-cumulative" chart of
  *        https://epoch.ai/publications/model-counts-compute-thresholds; the same decoding reproduces the
  *        article's quoted 10^26 figures: ~34 by 2027, ~239 by 2030).
- * Right: global AI tokens processed per month, LINEAR scale, Goldman Sachs Research ("Decoding the Agentic Economy",
- *        May 2026; figures as reported by GS Insights and I/O Fund): ~1.7Q (mid-2025, estimate), ~5.6Q (May 2026,
- *        estimate), ~47Q (2028, forecast), ~120Q (mid-2030, forecast; "24x" from 2026), joined by straight lines.
+ * Right: global AI tokens processed per month, LINEAR scale, stacked by workload (non-agent / consumer agents /
+ *        enterprise agents), Goldman Sachs Research (May 2026), values from the chart in the GS Insights article
+ *        "AI Agents Forecast to Boost Tech Cash Flow as Usage Soars"; points joined by straight lines.
  * Animates in when the slide appears.
  */
 import { useAutoplay } from '../utils/autoplay'
@@ -26,25 +26,39 @@ const sx = (t: number) => PX + ((t - 2024) / 6) * (PR - PX)
 const cy = (v: number) => PB - (v / MAXM) * (PB - PT)
 const BW = 24
 
-// ---- right: tokens per month (quadrillions), linear ----
-const T0 = 2025, T1 = 2030.5, MAXT = 130
-const knots = [
-  { t: 2025.5, v: 1.7, l: '1.7Q', est: true },
-  { t: 2026 + 4.5 / 12, v: 5.6, l: '5.6Q', est: true },
-  { t: 2028.5, v: 47, l: '47Q', est: false },
-  { t: 2030.5, v: 120, l: '120Q', est: false },
-]
-const NOW = knots[1].t
+// ---- right: tokens per month (quadrillions), linear, stacked by workload ----
+// Goldman Sachs Research, from the Flourish chart embedded in the GS Insights article (token-use-by-ai-agents):
+// [non-agent, consumer agents, enterprise agents] per month. 2024-26 are estimates of today's usage, 2027+ forecasts.
+// (The source labels the first point "01/04/0204", read as April 2024.)
+const T0 = 2024, T1 = 2030.42, MAXT = 130
+const ym = (y: number, m: number) => y + (m - 1) / 12
+const data = [
+  { t: ym(2024, 4), v: [0.142, 0, 0] },
+  { t: ym(2025, 5), v: [1.707, 0, 0] },
+  { t: ym(2026, 4), v: [5.575, 0, 0] },
+  { t: ym(2027, 5), v: [7.885, 7.399, 13.588] },
+  { t: ym(2028, 5), v: [10.697, 15.975, 20.365] },
+  { t: ym(2029, 5), v: [13.462, 28.400, 32.316] },
+  { t: ym(2030, 5), v: [16.281, 45.122, 56.251] },
+].map(d => ({ ...d, total: d.v[0] + d.v[1] + d.v[2] }))
+const NOW = data[2].t
 const tx = (t: number) => PX + ((t - T0) / (T1 - T0)) * (PR - PX)
 const ty = (v: number) => PB - (v / MAXT) * (PB - PT)
-// published points joined by straight lines
-const pt = (k: { t: number, v: number }) => `${tx(k.t).toFixed(1)},${ty(k.v).toFixed(1)}`
-const pastPts = knots.slice(0, 2).map(pt)
-const futPts = knots.slice(1).map(pt)
-const pastLine = `M${pastPts.join(' L')}`
-const futLine = `M${futPts.join(' L')}`
-const tokArea = `M${tx(knots[0].t)},${PB} L${[...pastPts, ...futPts.slice(1)].join(' L')} L${tx(knots.at(-1)!.t)},${PB} Z`
-const GROWTH = Math.round(knots.at(-1)!.v / knots[0].v / 10) * 10 // ~70
+// cumulative tops of each band (straight segments between published points)
+const cum = (k: number) => data.map(d => d.v.slice(0, k + 1).reduce((a, b) => a + b, 0))
+const tops = [0, 1, 2].map(cum)
+const pts = (vals: number[]) => data.map((d, i) => `${tx(d.t).toFixed(1)},${ty(vals[i]).toFixed(1)}`)
+const base = data.map(() => 0)
+const bands = [
+  { k: 'non', n: 'non-agent', lo: base, hi: tops[0] },
+  { k: 'con', n: 'consumer agents', lo: tops[0], hi: tops[1] },
+  { k: 'ent', n: 'enterprise agents', lo: tops[1], hi: tops[2] },
+].map(b => ({ ...b, d: `M${pts(b.hi).join(' L')} L${pts(b.lo).reverse().join(' L')} Z`, mid: (b.lo.at(-1)! + b.hi.at(-1)!) / 2 }))
+const totPts = pts(tops[2])
+const pastLine = `M${totPts.slice(0, 3).join(' L')}`
+const futLine = `M${totPts.slice(2).join(' L')}`
+const fmtQ = (v: number) => (v < 1 ? v.toFixed(2) : v < 10 ? v.toFixed(1) : Math.round(v).toString()) + 'Q'
+const GROWTH = Math.round(data.at(-1)!.total / data[1].total / 10) * 10 // ~70, May 2025 -> May 2030
 </script>
 
 <template>
@@ -77,36 +91,33 @@ const GROWTH = Math.round(knots.at(-1)!.v / knots[0].v / 10) * 10 // ~70
     <div class="panel">
       <div class="head">
         <span class="t">Inference: AI tokens processed per month</span>
-        <span class="s">worldwide, quadrillions · Goldman Sachs estimates and forecast</span>
+        <span class="s">worldwide, quadrillions · Goldman Sachs estimates and forecast, by workload</span>
       </div>
       <svg :viewBox="`0 0 ${W} ${H}`" class="area" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <clipPath id="cd-reveal"><rect class="reveal" :x="PX - 2" y="0" :width="PR - PX + 40" :height="H" /></clipPath>
-          <linearGradient id="cd-tok" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="var(--slidev-theme-secondary)" stop-opacity="0.5" />
-            <stop offset="100%" stop-color="var(--slidev-theme-primary)" stop-opacity="0.12" />
-          </linearGradient>
         </defs>
         <line v-for="v in [0, 40, 80, 120]" :key="'g' + v" :x1="PX" :x2="PR" :y1="ty(v)" :y2="ty(v)" class="gridline" />
         <text v-for="v in [0, 40, 80, 120]" :key="'t' + v" :x="PX - 6" :y="ty(v) + 3" class="tick" text-anchor="end">{{ v }}Q</text>
-        <text v-for="y in [2025, 2026, 2027, 2028, 2029, 2030]" :key="y" :x="tx(y)" :y="PB + 15" class="tick" text-anchor="middle">{{ y }}</text>
+        <text v-for="y in [2024, 2025, 2026, 2027, 2028, 2029, 2030]" :key="y" :x="tx(y)" :y="PB + 15" class="tick" text-anchor="middle">{{ y }}</text>
         <!-- "today" marker: estimates to the left, forecast to the right -->
-        <line :x1="tx(NOW)" :x2="tx(NOW)" :y1="ty(40)" :y2="PB" class="now" />
-        <text :x="tx(NOW) - 4" :y="ty(40) + 4" class="now-l" text-anchor="end">estimate</text>
-        <text :x="tx(NOW) + 4" :y="ty(40) + 4" class="now-l">forecast →</text>
+        <line :x1="tx(NOW)" :x2="tx(NOW)" :y1="ty(118)" :y2="PB" class="now" />
+        <text :x="tx(NOW) - 4" :y="ty(114)" class="now-l" text-anchor="end">← estimate</text>
+        <text :x="tx(NOW) + 4" :y="ty(114)" class="now-l">forecast →</text>
         <g clip-path="url(#cd-reveal)">
-          <path :d="tokArea" fill="url(#cd-tok)" />
+          <path v-for="b in bands" :key="b.k" :d="b.d" class="band" :class="b.k" />
           <path :d="pastLine" class="tok-line" />
           <path :d="futLine" class="tok-line fut" />
-          <g v-for="k in knots" :key="k.l">
-            <circle :cx="tx(k.t)" :cy="ty(k.v)" r="3.2" class="tok-dot" />
-            <text :x="tx(k.t) + (k.v > 100 ? 0 : -6)" :y="ty(k.v) - 7" class="tok-v" :text-anchor="k.v > 100 ? 'middle' : 'end'">{{ k.l }}</text>
+          <g v-for="(d, i) in data" :key="d.t">
+            <circle :cx="tx(d.t)" :cy="ty(d.total)" r="3" class="tok-dot" />
+            <text :x="tx(d.t) + (i === 0 ? -3 : i === data.length - 1 ? 0 : -5)" :y="ty(d.total) - (i === 0 ? 24 : 7)" class="tok-v" :text-anchor="i === 0 ? 'start' : i === data.length - 1 ? 'middle' : 'end'">{{ fmtQ(d.total) }}</text>
           </g>
         </g>
         <line :x1="PX" :x2="PR" :y1="PB" :y2="PB" class="axis" />
         <g class="lbl">
-          <text :x="tx(2025.15)" :y="ty(105)" class="l-tok"><tspan class="l-v">~×{{ GROWTH }}</tspan> in five years</text>
-          <text :x="tx(2025.15)" :y="ty(105) + 14" class="l-sub">driven by agentic AI</text>
+          <text v-for="b in bands" :key="'l' + b.k" :x="PR + 8" :y="ty(b.mid) + 4" class="band-l" :class="b.k">{{ b.n }}</text>
+          <text :x="tx(2024.1)" :y="ty(72)" class="l-tok"><tspan class="l-v">~×{{ GROWTH }}</tspan> in five years</text>
+          <text :x="tx(2024.1)" :y="ty(72) + 14" class="l-sub">driven by agentic AI</text>
         </g>
       </svg>
     </div>
@@ -127,6 +138,14 @@ const GROWTH = Math.round(knots.at(-1)!.v / knots[0].v / 10) * 10 // ~70
 .on .reveal { transform: scaleX(1); }
 .tok-line { fill: none; stroke: #0891b2; stroke-width: 2.4; }
 .tok-line.fut { stroke-dasharray: 5 4; }
+.band { stroke: #fff; stroke-width: 0.8; stroke-opacity: 0.8; }
+.band.non { fill: #2dd4bf; fill-opacity: 0.45; }
+.band.con { fill: #6366f1; fill-opacity: 0.38; }
+.band.ent { fill: #f472b6; fill-opacity: 0.38; }
+.band-l { font-family: 'Source Serif 4', serif; font-size: 10.5px; font-weight: 600; }
+.band-l.non { fill: #0d9488; }
+.band-l.con { fill: #4f46e5; }
+.band-l.ent { fill: #db2777; }
 .tok-dot { fill: #0891b2; }
 .tok-v { font-family: var(--mono); font-size: 11px; font-weight: 700; fill: var(--slidev-theme-ink); }
 .now { stroke: var(--slidev-theme-ink-secondary); stroke-dasharray: 2 3; opacity: 0.6; }
