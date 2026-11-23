@@ -8,11 +8,11 @@
  *   architecture & software = the remainder -> x13
  * One SVG: the stacked chart on the left; each band's 2030 end is joined by a connector to its card on the right,
  * and the cards read top to bottom as the product  x130 = x13 × x2.3 × x4.5  (same order as the stack).
- * Animates in when the slide appears: chart sweeps in, then connectors and cards.
+ * Animates in when the slide appears (~1.5 s): chart sweeps in, then connectors and cards.
  */
 import { useAutoplay } from '../utils/autoplay'
 
-const { on, instant } = useAutoplay(250)
+const { on, instant } = useAutoplay(150)
 
 const W = 780, H = 256
 const PX = 36, PR = 440, PT = 16, PB = 226
@@ -113,19 +113,19 @@ const demPath = `M${PR + 6},${demY.toFixed(1)} C${(PR + CX) / 2},${demY.toFixed(
       </g>
 
       <!-- header: total demand -->
-      <g class="card-g" style="--d: 2.1s">
+      <g class="card-g" style="--d: 1s">
         <text :x="CX" :y="HEAD_Y" class="dem-v">×{{ Math.round(DEM) }}</text>
         <text :x="CX + 72" :y="HEAD_Y" class="dem-n">compute demand =</text>
       </g>
 
       <!-- cards, read as a product -->
-      <g v-for="(c, i) in cards" :key="c.k" class="card-g" :style="{ '--d': `${2.3 + i * 0.25}s` }">
+      <g v-for="(c, i) in cards" :key="c.k" class="card-g" :style="{ '--d': `${1.1 + i * 0.12}s` }">
         <rect :x="CX" :y="c.y" :width="CW" :height="c.h" rx="9" class="card" :class="c.k" />
         <text :x="CX + 14" :y="c.cy + (c.k === 'arch' ? 9 : 7)" class="c-v" :class="c.k">{{ c.v }}</text>
         <text :x="CX + (c.k === 'arch' ? 92 : 76)" :y="c.cy - 2" class="c-n">{{ c.n }}</text>
         <text :x="CX + (c.k === 'arch' ? 92 : 76)" :y="c.cy + 13" class="c-s">{{ c.s }}</text>
       </g>
-      <text v-for="(o, i) in OPS" :key="'op' + i" :x="CX + 14" :y="o.y" class="op card-g" :style="{ '--d': `${2.4 + i * 0.25}s` }">×</text>
+      <text v-for="(o, i) in OPS" :key="'op' + i" :x="CX + 14" :y="o.y" class="op card-g" :style="{ '--d': `${1.15 + i * 0.12}s` }">×</text>
     </svg>
   </div>
 </template>
@@ -140,14 +140,14 @@ const demPath = `M${PR + 6},${demY.toFixed(1)} C${(PR + CX) / 2},${demY.toFixed(
 .gridline { stroke: var(--slidev-theme-border); }
 .axis { stroke: var(--slidev-theme-ink); opacity: 0.5; }
 .tick { font-family: var(--mono); font-size: 9px; fill: var(--slidev-theme-ink-secondary); }
-.reveal { transform: scaleX(0); transform-origin: left; transform-box: fill-box; transition: transform 1.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s; }
+.reveal { transform: scaleX(0); transform-origin: left; transform-box: fill-box; transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1) 0.15s; }
 .on .reveal { transform: scaleX(1); }
 .power-line { fill: none; stroke: #0d9488; stroke-width: 1.6; }
 .node-line { fill: none; stroke: var(--slidev-theme-primary); stroke-width: 1.6; }
 .demand-line { fill: none; stroke: var(--slidev-theme-ink); stroke-width: 2.2; }
 
 /* connectors */
-.links { opacity: 0; transition: opacity 0.6s ease 2s; }
+.links { opacity: 0; transition: opacity 0.4s ease 0.9s; }
 .on .links { opacity: 1; }
 .link { fill: none; stroke-width: 1.4; stroke-dasharray: 3 3; }
 .link.dem, .dot.dem { stroke: var(--slidev-theme-ink); fill: var(--slidev-theme-ink); }
@@ -160,7 +160,7 @@ const demPath = `M${PR + 6},${demY.toFixed(1)} C${(PR + CX) / 2},${demY.toFixed(
 .dot.pow { fill: #0d9488; }
 
 /* header + cards */
-.card-g { opacity: 0; transform: translateX(6px); transition: opacity 0.5s ease, transform 0.5s ease; transition-delay: var(--d); }
+.card-g { opacity: 0; transform: translateX(6px); transition: opacity 0.35s ease, transform 0.35s ease; transition-delay: var(--d); }
 .on .card-g { opacity: 1; transform: none; }
 .dem-v { font-family: var(--mono); font-weight: 700; font-size: 24px; fill: var(--slidev-theme-ink); }
 .dem-n { font-family: 'Source Serif 4', serif; font-size: 13px; fill: var(--slidev-theme-ink-secondary); }

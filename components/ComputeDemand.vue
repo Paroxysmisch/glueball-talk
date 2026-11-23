@@ -41,7 +41,6 @@ const data = [
   { t: ym(2029, 5), v: [13.462, 28.400, 32.316] },
   { t: ym(2030, 5), v: [16.281, 45.122, 56.251] },
 ].map(d => ({ ...d, total: d.v[0] + d.v[1] + d.v[2] }))
-const NOW = data[2].t
 const tx = (t: number) => PX + ((t - T0) / (T1 - T0)) * (PR - PX)
 const ty = (v: number) => PB - (v / MAXT) * (PB - PT)
 // cumulative tops of each band (straight segments between published points)
@@ -100,10 +99,6 @@ const GROWTH = Math.round(data.at(-1)!.total / data[1].total / 10) * 10 // ~70, 
         <line v-for="v in [0, 40, 80, 120]" :key="'g' + v" :x1="PX" :x2="PR" :y1="ty(v)" :y2="ty(v)" class="gridline" />
         <text v-for="v in [0, 40, 80, 120]" :key="'t' + v" :x="PX - 6" :y="ty(v) + 3" class="tick" text-anchor="end">{{ v }}Q</text>
         <text v-for="y in [2024, 2025, 2026, 2027, 2028, 2029, 2030]" :key="y" :x="tx(y)" :y="PB + 15" class="tick" text-anchor="middle">{{ y }}</text>
-        <!-- "today" marker: estimates to the left, forecast to the right -->
-        <line :x1="tx(NOW)" :x2="tx(NOW)" :y1="ty(118)" :y2="PB" class="now" />
-        <text :x="tx(NOW) - 4" :y="ty(114)" class="now-l" text-anchor="end">← estimate</text>
-        <text :x="tx(NOW) + 4" :y="ty(114)" class="now-l">forecast →</text>
         <g clip-path="url(#cd-reveal)">
           <path v-for="b in bands" :key="b.k" :d="b.d" class="band" :class="b.k" />
           <path :d="pastLine" class="tok-line" />
@@ -148,8 +143,6 @@ const GROWTH = Math.round(data.at(-1)!.total / data[1].total / 10) * 10 // ~70, 
 .band-l.ent { fill: #db2777; }
 .tok-dot { fill: #0891b2; }
 .tok-v { font-family: var(--mono); font-size: 11px; font-weight: 700; fill: var(--slidev-theme-ink); }
-.now { stroke: var(--slidev-theme-ink-secondary); stroke-dasharray: 2 3; opacity: 0.6; }
-.now-l { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 10px; fill: var(--slidev-theme-ink-secondary); }
 .lbl { opacity: 0; transition: opacity 0.5s ease 2.2s; }
 .on .lbl { opacity: 1; }
 .l-v { font-family: var(--mono); font-weight: 700; font-size: 13px; }
