@@ -21,11 +21,11 @@ const W = 470, H = 250
 const LX0 = 112, LX1 = 400
 const lx = (y: number) => LX0 + (y / 10) * (LX1 - LX0)
 const leads = [
-  { n: 'Grid connection', a: 5, b: 10, l: '5–10 yrs' },
-  { n: 'Transmission line', a: 4, b: 8, l: '4–8 yrs' },
-  { n: 'Gas turbine', a: 5, b: 5, l: '~5 yrs' },
-  { n: 'Transformer', a: 2, b: 3, l: '2–3 yrs' },
-]
+  { n: 'Grid connection', a: 5, b: 10 },
+  { n: 'Transmission line', a: 4, b: 8 },
+  { n: 'Gas turbine', a: 5, b: 5 },
+  { n: 'Transformer', a: 2, b: 3 },
+].map(r => ({ ...r, m: (r.a + r.b) / 2 })) // bar = middle of the quoted range; whisker = the range
 const ROW0 = 52, ROWH = 44, BH = 20, LAX = ROW0 + (leads.length - 1) * ROWH + 30
 
 // ---------- right: rack power ----------
@@ -50,16 +50,26 @@ const AIR = 50
     <div class="panel">
       <div class="head">
         <span class="t">Power infrastructure takes years</span>
-        <span class="s">typical lead times · IEA (2026)</span>
+        <span class="s">typical lead times · whiskers show the range · IEA (2026)</span>
       </div>
       <svg :viewBox="`0 0 ${W} ${H}`" class="area" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="pw-lead" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#5eead4" stop-opacity="0.45" />
+            <stop offset="100%" stop-color="#14b8a6" stop-opacity="0.85" />
+          </linearGradient>
+        </defs>
         <line v-for="y in [0, 2, 4, 6, 8, 10]" :key="'lg' + y" :x1="lx(y)" :x2="lx(y)" :y1="ROW0 - 22" :y2="LAX" class="gridline" />
         <text v-for="y in [0, 2, 4, 6, 8, 10]" :key="'lt' + y" :x="lx(y)" :y="LAX + 14" class="tick" text-anchor="middle">{{ y }}{{ y === 10 ? ' yrs' : '' }}</text>
         <g v-for="(r, i) in leads" :key="r.n" class="lead" :style="{ '--d': `${0.3 + i * 0.12}s` }">
           <text :x="LX0 - 8" :y="ROW0 + i * ROWH + 4" class="row-n" text-anchor="end">{{ r.n }}</text>
-          <rect :x="lx(0)" :y="ROW0 + i * ROWH - BH / 2" :width="lx(r.a) - lx(0)" :height="BH" rx="4" class="lead-bar" />
-          <rect v-if="r.b > r.a" :x="lx(r.a)" :y="ROW0 + i * ROWH - BH / 2" :width="lx(r.b) - lx(r.a)" :height="BH" rx="4" class="lead-rng" />
-          <text :x="lx(r.b) + 6" :y="ROW0 + i * ROWH + 4" class="row-v">{{ r.l }}</text>
+          <rect :x="lx(0)" :y="ROW0 + i * ROWH - BH / 2" :width="lx(r.m) - lx(0)" :height="BH" rx="4" class="lead-bar" />
+          <g v-if="r.b > r.a" class="whisker">
+            <line :x1="lx(r.a)" :x2="lx(r.b)" :y1="ROW0 + i * ROWH" :y2="ROW0 + i * ROWH" />
+            <line :x1="lx(r.a)" :x2="lx(r.a)" :y1="ROW0 + i * ROWH - 6" :y2="ROW0 + i * ROWH + 6" />
+            <line :x1="lx(r.b)" :x2="lx(r.b)" :y1="ROW0 + i * ROWH - 6" :y2="ROW0 + i * ROWH + 6" />
+          </g>
+          <text :x="lx(r.b) + 8" :y="ROW0 + i * ROWH + 4" class="row-v">~{{ r.m }} yrs<tspan v-if="r.b > r.a" class="row-r" dx="5">({{ r.a }}–{{ r.b }})</tspan></text>
         </g>
         <g class="lbl">
           <line :x1="lx(1)" :x2="lx(1)" :y1="ROW0 - 26" :y2="LAX" class="cad" />
@@ -116,8 +126,9 @@ const AIR = 50
 /* lead times */
 .row-n { font-family: 'Source Serif 4', serif; font-size: 12.5px; fill: var(--slidev-theme-ink); }
 .row-v { font-family: var(--mono); font-size: 11.5px; font-weight: 700; fill: #0d9488; }
-.lead-bar { fill: #0d9488; opacity: 0.8; }
-.lead-rng { fill: #0d9488; opacity: 0.3; }
+.lead-bar { fill: url(#pw-lead); }
+.whisker line { stroke: #115e59; stroke-width: 1.6; stroke-linecap: round; }
+.row-r { font-weight: 400; font-size: 10px; fill: var(--slidev-theme-ink-secondary); }
 .lead { opacity: 0; transform: translateX(-8px); transition: opacity 0.5s ease, transform 0.5s ease; transition-delay: var(--d); }
 .on .lead { opacity: 1; transform: none; }
 .cad { stroke: var(--slidev-theme-primary); stroke-width: 1.8; stroke-dasharray: 4 3; }
