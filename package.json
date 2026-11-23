@@ -6,7 +6,8 @@
     "build": "slidev build",
     "dev": "slidev --open",
     "export": "slidev export",
-    "screenshot": "slidev export --format png"
+    "screenshot": "slidev export --format png",
+    "export:clicks": "slidev export --with-clicks --output glueball-with-clicks-full.pdf && gs -q -sDEVICE=pdfwrite -dPDFSETTINGS=/printer -dNOPAUSE -dBATCH -sOutputFile=glueball-with-clicks.pdf glueball-with-clicks-full.pdf && rm glueball-with-clicks-full.pdf"
   },
   "dependencies": {
     "@slidev/cli": "^53.1.0",

@@ -7,6 +7,7 @@ using the Aurora theme (`./slidev-theme`, cloned from git@github.com:Paroxysmisc
 bun install          # or npm install
 bun run dev          # http://localhost:3030, presenter view at /presenter (script is in the notes)
 bun run export       # PDF (needs playwright-chromium, already a devDependency)
+bun run export:clicks  # glueball-with-clicks.pdf: one page per click step, compressed with Ghostscript (~10 MB)
 ```
 
 - `slides.md` — 19 slides; the full spoken script lives in each slide's presenter notes.
