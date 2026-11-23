@@ -10,6 +10,14 @@
  *    whose tile heats up (accent ramp) as k accumulates.
  */
 import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { useNav } from '@slidev/client'
+
+// PDF export: Chromium rasterises CSS-3D-transformed content at 1x (a blurry, moiré'd glyph), so in print mode we
+// draw one still frame, bake the same perspective into the canvas pixels (mesh warp), and drop the CSS 3D transform.
+const { isPrintMode } = useNav()
+const flat = isPrintMode.value
+const labelStyle = ref<Record<string, Record<string, string>>>({})
+const canvasStyle = ref<Record<string, string>>({})
 
 const props = withDefaults(defineProps<{ size?: number; speed?: number }>(), { size: 380, speed: 1 })
 const canvas = ref<HTMLCanvasElement>()
@@ -187,6 +195,7 @@ onMounted(() => {
   el.height = W * dpr
   el.style.width = `${W}px`
   el.style.height = `${W}px`
+  if (flat) { renderFlat(el, W, dpr); return }
   const ctx = el.getContext('2d')!
   ctx.scale(dpr, dpr)
   const t0 = performance.now()
@@ -197,20 +206,90 @@ onMounted(() => {
   raf = requestAnimationFrame(loop)
 })
 onBeforeUnmount(() => cancelAnimationFrame(raf))
+
+// same as the CSS: perspective(1100px) rotateY(-16deg) rotateX(6deg), transform-origin 60% 50%
+function project(W: number) {
+  const P = 1100, ry = (-16 * Math.PI) / 180, rx = (6 * Math.PI) / 180
+  const ox = 0.6 * W, oy = 0.5 * W
+  return (x: number, y: number): [number, number] => {
+    const X = x - ox, Y = y - oy
+    const y1 = Y * Math.cos(rx), z1 = Y * Math.sin(rx) // rotateX
+    const x2 = X * Math.cos(ry) + z1 * Math.sin(ry), z2 = -X * Math.sin(ry) + z1 * Math.cos(ry) // rotateY
+    const k = P / (P - z2) // perspective
+    return [ox + x2 * k, oy + y1 * k]
+  }
+}
+
+function renderFlat(el: HTMLCanvasElement, W: number, dpr: number) {
+  // 1. one still frame, unwarped, offscreen
+  const src = document.createElement('canvas')
+  src.width = W * dpr
+  src.height = W * dpr
+  const sctx = src.getContext('2d')!
+  sctx.scale(dpr, dpr)
+  draw(sctx, 3.2 + 2.6)
+  // 2. bounds of the warped square
+  const pj = project(W)
+  const corners = [pj(0, 0), pj(W, 0), pj(0, W), pj(W, W)]
+  const minX = Math.floor(Math.min(...corners.map(c => c[0]))), maxX = Math.ceil(Math.max(...corners.map(c => c[0])))
+  const minY = Math.floor(Math.min(...corners.map(c => c[1]))), maxY = Math.ceil(Math.max(...corners.map(c => c[1])))
+  el.width = (maxX - minX) * dpr
+  el.height = (maxY - minY) * dpr
+  canvasStyle.value = { position: 'absolute', left: `${minX}px`, top: `${minY}px`, width: `${maxX - minX}px`, height: `${maxY - minY}px` }
+  // 3. mesh warp: each grid cell -> two affine-mapped triangles
+  const ctx = el.getContext('2d')!
+  const n = 32, step = W / n
+  const to = (x: number, y: number): [number, number] => { const [u, v] = pj(x, y); return [(u - minX) * dpr, (v - minY) * dpr] }
+  const tri = (s: [number, number][], d: [number, number][]) => {
+    const [[x0, y0], [x1, y1], [x2, y2]] = s.map(([x, y]) => [x * dpr, y * dpr])
+    const [[u0, v0], [u1, v1], [u2, v2]] = d
+    const den = (x1 - x0) * (y2 - y0) - (x2 - x0) * (y1 - y0)
+    const a = ((u1 - u0) * (y2 - y0) - (u2 - u0) * (y1 - y0)) / den
+    const c = ((u2 - u0) * (x1 - x0) - (u1 - u0) * (x2 - x0)) / den
+    const b = ((v1 - v0) * (y2 - y0) - (v2 - v0) * (y1 - y0)) / den
+    const dd = ((v2 - v0) * (x1 - x0) - (v1 - v0) * (x2 - x0)) / den
+    // clip to the destination triangle, nudged outwards a little so neighbouring triangles leave no seams
+    const cx = (u0 + u1 + u2) / 3, cy = (v0 + v1 + v2) / 3
+    const grow = (u: number, v: number): [number, number] => { const l = Math.hypot(u - cx, v - cy) || 1; return [u + ((u - cx) / l) * 0.8, v + ((v - cy) / l) * 0.8] }
+    ctx.save()
+    ctx.beginPath()
+    for (const [i, [u, v]] of [[u0, v0], [u1, v1], [u2, v2]].entries()) { const [gu, gv] = grow(u, v); i ? ctx.lineTo(gu, gv) : ctx.moveTo(gu, gv) }
+    ctx.closePath()
+    ctx.clip()
+    ctx.setTransform(a, b, c, dd, u0 - a * x0 - c * y0, v0 - b * x0 - dd * y0)
+    ctx.drawImage(src, 0, 0)
+    ctx.restore()
+  }
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++) {
+      const x0 = i * step, y0 = j * step, x1 = x0 + step, y1 = y0 + step
+      tri([[x0, y0], [x1, y0], [x0, y1]], [to(x0, y0), to(x1, y0), to(x0, y1)])
+      tri([[x1, y0], [x1, y1], [x0, y1]], [to(x1, y0), to(x1, y1), to(x0, y1)])
+    }
+  }
+  // 4. labels: same anchor points as the CSS, pushed through the projection
+  const [ax, ay] = pj(-22, 0.74 * W), [bx, by] = pj(0.74 * W, -30), [cx, cy] = pj(W + 20, 0.74 * W)
+  labelStyle.value = {
+    a: { left: `${ax}px`, top: `${ay}px` },
+    b: { left: `${bx}px`, top: `${by}px` },
+    c: { left: 'auto', right: `${W - cx}px`, top: `${cy}px` },
+  }
+}
 </script>
 
 <template>
-  <div class="mma-glyph">
-    <canvas ref="canvas" />
-    <span class="lbl a">A</span>
-    <span class="lbl b">B</span>
-    <span class="lbl c">C</span>
+  <div class="mma-glyph" :class="{ flat }" :style="flat ? { width: `${props.size}px`, height: `${props.size}px` } : {}">
+    <canvas ref="canvas" :style="canvasStyle" />
+    <span class="lbl a" :style="labelStyle.a">A</span>
+    <span class="lbl b" :style="labelStyle.b">B</span>
+    <span class="lbl c" :style="labelStyle.c">C</span>
   </div>
 </template>
 
 <style scoped>
 .mma-glyph { position: relative; display: inline-block; transform: perspective(1100px) rotateY(-16deg) rotateX(6deg); transform-origin: 60% 50%; }
 canvas { display: block; }
+.mma-glyph.flat { transform: none; }
 .lbl { position: absolute; font-family: 'Instrument Serif', serif; font-style: italic; font-size: 22px; color: var(--slidev-theme-ink-secondary); opacity: 0.6; }
 .lbl.a { left: -22px; top: 74%; }
 .lbl.b { left: 74%; top: -30px; }

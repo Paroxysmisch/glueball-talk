@@ -11,6 +11,9 @@ html .footnote-n, html .footnote-ref { font-family: var(--mono) !important; }
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+/* PDF export: gradient-clipped text leaves hairline artefacts (and breaks entirely under Ghostscript),
+   so print it in a single colour from the middle of the gradient */
+html.print .grad-text { background: none; -webkit-text-fill-color: #348ee2; color: #348ee2; }
 
 .slidev-layout p.lede {
   font-size: 17px;
