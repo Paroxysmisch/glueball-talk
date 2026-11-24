@@ -47,11 +47,9 @@ Model capability has largely been driven by scaling laws, and demand for compute
 
 [left] Training. Today there are essentially no models trained with more than 10^27 FLOPs. By 2030, Epoch expects over a hundred.
 
-[right] And inference, actually using these models, is growing even faster. Goldman Sachs estimates the world processed about 1.7 quadrillion tokens a month in mid-2025. They forecast about 120 quadrillion a month by 2030, roughly 70 times more, and the colours show where it comes from: most of the growth is consumer and enterprise agents. An agent doesn't answer one question; it runs a long loop of model calls, reading files, calling tools, thinking. And this is on a linear scale: we are only at the very start of that curve.
-
-For context, Google alone went from about 10 trillion tokens a month in 2024 to 3.2 quadrillion in May 2026.
-
-(Data: Epoch >10^27 counts decoded from their cumulative chart: 0 / 6 / 25 / 64 / 124 by the start of 2026–2030. Goldman Sachs tokens/month, total (non-agent / consumer agents / enterprise agents), from the chart in their May 2026 article: Apr 2024 0.14Q; May 2025 1.71Q; Apr 2026 5.57Q (estimates); May 2027 28.9Q (7.9 / 7.4 / 13.6); May 2028 47.0Q (10.7 / 16.0 / 20.4); May 2029 74.2Q (13.5 / 28.4 / 32.3); May 2030 117.7Q (16.3 / 45.1 / 56.3) (forecasts); published points joined by straight lines. Google: 9.7T Apr 2024, 3.2Q May 2026, Sundar Pichai at I/O 2025 / 2026.)
+[right] And inference is growing even faster. 
+Goldman Sachs estimates the world processed about 5.6 quadrillion tokens a month in 2026.
+They forecast about 120 quadrillion a month by 2030, roughly 70 times more, mostly driven by agentic workloads
 -->
 
 ---
@@ -65,11 +63,15 @@ For context, Google alone went from about 10 trillion tokens a month in 2024 to 
 <!--
 The obvious answer is to just build more data centres and plug in more power. That runs into two walls.
 
-[left] First, power infrastructure is slow. According to the IEA, a grid connection takes five to ten years in many places, a new transmission line four to eight, a gas turbine about five years to be delivered, and even a transformer two to three. Meanwhile NVIDIA ships a new GPU generation every year. Already, 30 to 50% of the large data-centre projects planned for 2026 are expected to be delayed, mostly by power.
+[left] First, power infrastructure is slow, taking years to even build-out new Transformers.
+Meanwhile NVIDIA ships a new GPU generation every year.
+Already, 30 to 50% of the large data-centre projects planned for 2026 are expected to be delayed, mostly by power.
 
-[right] Second, density. You can't just pack more chips into the same building. A rack of A100s drew about 26 kilowatts. A GB200 rack draws 120, Vera Rubin about 190, and NVIDIA's announced Rubin Ultra rack 600 kilowatts, the power of a small neighbourhood in the space of a fridge. Air cooling stops working at around 50 kilowatts, so every rack since Blackwell needs liquid cooling, new power delivery, new buildings. The average data-centre rack today is about 9 kilowatts.
-
-(Data: lead times from IEA Key Questions §1.3 (transformers 2–3 yrs, gas turbines ~5 yrs per Wood Mackenzie, grid connection 5–10 yrs; transmission 4–8 yrs). Delays: Sightline Climate (Feb 2026). Racks: 4× DGX A100 at 6.5 kW; 4× DGX H100 40.8 kW (SuperPOD guide); GB200 NVL72 120 kW, GB300 NVL72 135 kW (Mission Control); Vera Rubin NVL72 187 kW Max-Q / 227 kW Max-P; Rubin Ultra NVL576 ~600 kW (GTC 2025). Air cooling impractical >~50 kW/rack, average ~9 kW: Uptime Institute.)
+[right] Second, power density.
+We are already pushing it to its limits.
+There's a limit to how power-hungry your chips in a rack can be by our ability to dissipate that heat.
+To put the Rubin Ultra number into perspective, a house's peak power consumption is around 10kW.
+A single Rubin Ultra rack will draw the same power as a small neighborhood in the volume of a large fridge.
 -->
 
 ---
@@ -81,13 +83,11 @@ The obvious answer is to just build more data centres and plug in more power. Th
 <p class="sources">Sources: AI 2027, <em>Compute Forecast</em> (2025) · IEA, <em>Key Questions on Energy and AI</em> (2026) · TSMC Technology Symposium roadmaps (2025, 2026).</p>
 
 <!--
-So let's put it together. AI compute demand grows about 130 times by 2030.
-
 Even if AI data centres grow their power 4.5 times, which is what the IEA expects, and we follow the best TSMC process roadmap for about 2.3 times, that's only about 10 times combined.
 
 The remaining 13 times, more than power and process node combined, has to come from architecture: specialised arithmetic units, lower precision, asynchronous data movement.
 
-However, more complex hardware means the software we have to write to get the most out of it also becomes more complicated.
+However, more complex hardware means the software we have to write to get the most out of it also becomes MUCH more complicated.
 
 (Assumptions/data: demand = 2.25^(t-2024), AI 2027's global AI-compute growth, extended past 2027 → ×130. Power: IEA Apr 2026, AI-focused data-centre electricity +50% in 2025 and ×3 2025→2030 → ×4.5 vs 2024 (all data centres: 485 → 950 TWh, ×2). Node: TSMC power reduction at the same speed, best node each year vs N3E: N2 2025 (×1.38), A16 2027 (×1.67), A14 2028 (×1.90), A12 2029 (not disclosed; assumed like A14 vs N2 → ×2.3); cross-check: TSMC's Kevin Zhang, "every two years, we drive 30% efficiency" → 1.3^3 ≈ 2.2. Architecture & software = 130 / (4.5 × 2.3) ≈ ×12.5.)
 -->
@@ -157,9 +157,15 @@ However maximising this overlap requires rethinking algorithmic implementation t
 <!--
 Why are compilers struggling? Three reasons.
 
-First, every generation adds new hardware: the TMA copy engine, asynchronous tensor-core instructions, Blackwell's tensor memory. Each one needs new compiler passes and cost models written by hand, which takes years.
+First, every generation adds new hardware.
+Each one needs new compiler passes and cost models tuned by experts, which takes years to refine.
 
-Second, there is no single right answer. How to split a kernel into producer and consumer warps, how many pipeline stages, which memory layout: the best choice depends on the structure of each kernel, so fixed rules and autotuning leave performance on the table.
+Second, some kernels have peculiar computational patterns, which require very particular use of the hardware.
+
+Third, the right answer is rarely obvious. E.g. how to split a kernel into producer and consumer warps,
+how many pipeline stages,
+which memory layout:
+the best choice depends on the structure of each kernel, so fixed rules and autotuning leave performance on the table.
 
 Third, the compiler people themselves have conceded this. Triton added Gluon, a lower-level language, precisely so that experts can hand-write what the compiler can't do automatically.
 
@@ -190,13 +196,7 @@ clicks: 3
 </div>
 
 <!--
-Here's the catch. Today, these agents judge correctness by running tests. Tests check particular inputs on a particular run.
-
-[click — zoom into one run] 
-
-[click — overlap turns red] Concurrency bugs, such as data races or a missing barrier, depend on timing. A kernel can pass every test and still be wrong.
-
-[click] Worse, an agent that is optimising against tests can learn to overfit them.
+Go through slide
 
 So the question behind this work is simple: can we give agents tools that prove properties, not just test them?
 -->
@@ -252,9 +252,9 @@ clicks: 1
 <FormulaBuild :step="$clicks" />
 
 <!--
-Verification is the core idea.
+We turn the kernel's code into equations.
 
-[click] Where the maths is simple enough, we turn the kernel's code into equations. Here, Triton's softmax kernel: each line of the compiled code becomes one piece of a single formula, which the Z3 solver can then check against the reference.
+Agents can more quickly and easily use this to compare whether two kernels are mathematically equivalent.
 -->
 
 ---
@@ -268,15 +268,15 @@ clicks: 3
 <VerifyFigure :step="$clicks" />
 
 <!--
-The idea is that the agent can map code into a hardware model via our Gluon-to-Z3 library. It can then use this hardware event model to prove properties.
+The Formal Hardware Models helps agents deal with the complexities of modern hardware.
 
-E.g. in this case is there a race between the copy into buffer 0 and the reading of buffer 0.
+An agent uses our Gluon-to-Z3 library to map code into a Z3 model, and can then ask questions.
 
-A theorem prover then tries to satisfy this predicate.
+In this example, is there a race between copying to buffer 0 and reading from that same buffer.
 
-Here, the code is buggy, and the prover finds an schedule of events that satisfies this.
+The agent then runs the theorem prover, that shows an ordering such that that predicate is satisfied, indicating a bug.
 
-Fixing the kernel makes it unsatisfiable.
+Fixing the issue, shows UNSAT, so no race.
 -->
 
 ---
@@ -286,13 +286,7 @@ Fixing the kernel makes it unsatisfiable.
 <BugCharts />
 
 <!--
-[4:00 · Part 3 — Results]
-
-We asked two questions. First: does verification help agents find bugs? Yes.
-
-Across four different LLMs, Glueball detected two to three more of the 24 injected bugs, with zero false positives.
-
-On a harder suite of synchronisation bugs, it cut false positives, from seven to two for the strongest model.
+Cutting false positives allows for aggressive optimizations.
 -->
 
 ---
@@ -302,7 +296,7 @@ On a harder suite of synchronisation bugs, it cut false positives, from seven to
 <AblationBars />
 
 <!--
-We also switched the two tools on and off. With both tools, the agent needs about 40% fewer tokens to find the bugs: 0.93 million instead of 1.52 million.
+40% fewer tokens to find the bugs: 0.93 million instead of 1.52 million.
 -->
 
 ---
@@ -314,15 +308,11 @@ We also switched the two tools on and off. With both tools, the agent needs abou
 <SpeedupBars class="mt-2" />
 
 <!--
-Second: is the verified code still fast?
+We are able to improve performance, automatically, without human intervention, on whole models by 7--8%.
 
-Measured end to end on whole models, it is competitive with already well-tuned Triton, and up to about 7% faster.
+This shows that we can optimize for newer architectures much more easily with agentic systems, which was a major blocker for new ML accelerator companies in the past, so called CUDA moat.
 
-The agents found real hardware wins, such as routing MoE experts through the TMA's gather operation.
-
-On neighbourhood attention they changed the algorithm itself, which gives about 24 times.
-
-Mamba-2 only matched Triton: Triton's schedule there is already very good.
+Gains on standalone kernels is even larger.
 -->
 
 ---
@@ -349,15 +339,9 @@ Mamba-2 only matched Triton: Triton's schedule there is already very good.
 </div>
 
 <!--
-[5:00 · Part 4 — Future work and impact]
+Modern training and inference works across lots of accelerators and nodes.
 
-[everything plays automatically when the slide appears, ~3.5 s]
-
-The first direction is scale. Real training and inference run across many GPUs, and increasingly across different accelerators.
-
-Take a Mixture-of-Experts layer: every GPU sends its tokens to the experts on other GPUs, and gets results back, through two all-to-all collectives.
-
-Now suppose, for one batch, GPU 2's router sends it no tokens, and its kernel takes an early exit and skips the all-to-all. The other three GPUs wait for it forever. It only happens for some inputs, so tests rarely hit it. That's the kind of failure we get at scale: collectives that don't match up, deadlocks across devices, races between communication and compute.
+Go through list.
 
 These are exactly the bugs that tests catch least and proofs catch best.
 -->
@@ -406,13 +390,11 @@ clicks: 1
 <PhdSpectrum :step="$clicks" />
 
 <!--
-[7:00 · Part 5 — PhD and close]
-
 Glueball is the first step of my PhD, which is about automating machine-learning systems development across the whole software–hardware stack.
 
-On the kernel side, the next step is inequivalence checking: adversarial agents search for inputs where an optimised kernel and its reference disagree, and only mismatches reproduced on real hardware are trusted.
+Further down the stack, ...
 
-[click] Further down the stack, agents that build compilers for new accelerators, and learned models that predict a hardware design's speed, power and area, all working towards automated software–hardware co-design.
+With performance prediction, such AI-accelerated tooling will become part of standard R&D tools, it means many more companies & labs could produce breakthroughs
 -->
 
 ---
