@@ -44,7 +44,7 @@ const gap1 = `${((AXIS + 2.6) / BROKEN) * 100}%`
 <template>
   <div class="sb" :class="{ grown, instant }" :style="{ '--g0': gap0, '--g1': gap1 }">
     <div v-for="(g, gi) in groups" :key="g.title" class="grp">
-      <div class="group micro-label">{{ g.title }} <span class="scale">· own scale, {{ g.min.toFixed(g.dp) }}–{{ g.max.toFixed(g.dp) }}×</span></div>
+      <div class="group micro-label">{{ g.title }}</div>
       <div v-for="(r, i) in g.rows" :key="r.name" class="row">
         <div class="name">{{ r.name }}</div>
         <div class="track">
@@ -77,7 +77,6 @@ const gap1 = `${((AXIS + 2.6) / BROKEN) * 100}%`
 .grp { display: flex; flex-direction: column; gap: 5px; }
 .grp + .grp { margin-top: 8px; }
 .group { font-size: 10px !important; opacity: 0.55; margin-top: 6px; }
-.scale { text-transform: none; letter-spacing: 0.02em; font-weight: 400; font-family: 'Source Serif 4', serif; font-style: italic; }
 .row { display: grid; grid-template-columns: 145px 1fr 215px; align-items: center; gap: 14px; height: 30px; }
 .name { font-family: 'Archivo', sans-serif; font-weight: 600; font-size: 14px; color: var(--slidev-theme-ink); }
 .track { position: relative; height: 22px; }
