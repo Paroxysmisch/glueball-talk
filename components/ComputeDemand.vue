@@ -65,7 +65,7 @@ const GROWTH = Math.round(data.at(-1)!.total / data[1].total / 10) * 10 // ~70, 
     <!-- left: models above 10^27 FLOP -->
     <div class="panel">
       <div class="head">
-        <span class="t">Training: models trained with &gt;10<sup>27</sup> FLOP</span>
+        <span class="t">Training: models trained with &gt;10<sup>27</sup> FLOPs</span>
         <span class="s">cumulative count · Epoch AI median projection</span>
       </div>
       <svg :viewBox="`0 0 ${W} ${H}`" class="area" xmlns="http://www.w3.org/2000/svg">
